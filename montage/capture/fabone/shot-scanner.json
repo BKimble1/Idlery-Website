@@ -1,0 +1,9 @@
+{ "name": "scanner",
+  "url": "http://127.0.0.1:4183/?step=expose&virt=1&quality=high&lp=1",
+  "warm": { "w": 1172, "h": 510 },
+  "w": 1972, "h": 960, "expect": [1600, 900],
+  "setup": [ {"wait": 3000}, {"advance": 150},
+             {"eval": "const c = window.__fabStores.useClock.getState(); c.set(0.33); c.play()"}, {"advance": 20},
+             {"resize": true}, {"settleSize": true} ],
+  "frames": 150,
+  "outDir": "out/scanner" }

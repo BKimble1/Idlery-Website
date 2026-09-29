@@ -1,0 +1,117 @@
+{
+ "shot": "develop",
+ "exactUrl": "http://127.0.0.1:4183/?step=develop&virt=1&quality=high&capture=1",
+ "server": "vite preview of the production build (npm run build) of branch r4 @ 822bb0f, on 127.0.0.1:4183 (4173 was taken by another job)",
+ "browser": "Playwright 1.56.1 chromium (headless shell 1194), --use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist --enable-webgl",
+ "deviceScaleFactor": 1,
+ "windowDuringSetup": {
+  "w": 1172,
+  "h": 510
+ },
+ "windowWhileRecording": {
+  "w": 1972,
+  "h": 960
+ },
+ "canvasWhileRecording": {
+  "cssRect": [
+   372,
+   60,
+   1600,
+   900
+  ],
+  "drawingBuffer": [
+   1600,
+   900
+  ],
+  "pixelRatio": 1,
+  "qualityTier": "high"
+ },
+ "appStateAtFrame0": {
+  "mode": "learn",
+  "step": 18,
+  "machine": null,
+  "demo": false,
+  "scaleOverride": null,
+  "lightPath": false
+ },
+ "stageAtFrame0": {
+  "scale": "tool",
+  "space": "world",
+  "freeLook": false,
+  "flying": false,
+  "loading": null,
+  "failed": null,
+  "shown": true,
+  "cutaway": true
+ },
+ "setup": [
+  {
+   "wait": 3000,
+   "ms": 3002
+  },
+  {
+   "advance": 30,
+   "ms": 2100
+  },
+  {
+   "eval": "window.__fabStores.useApp.getState().answer('develop', {choice: 0, correct: true}); window.__fabStores.useClock.setState({progress: 0, playing: true, pendingPlay: false})",
+   "ms": 24
+  },
+  {
+   "advance": 75,
+   "ms": 468306
+  },
+  {
+   "resize": true,
+   "ms": 467
+  },
+  {
+   "settleSize": true,
+   "ms": 190457
+  }
+ ],
+ "during": [],
+ "framesRequested": 150,
+ "framesRecorded": 150,
+ "fps": 30,
+ "clock": "virtual (?virt=1): each frame = window.__fabAdvance(1) = 1/30 s, then gl.readPixels of the default framebuffer (canvas only, no DOM)",
+ "renderMsPerFrame": {
+  "median": 381,
+  "p90": 9357,
+  "max": 1161805,
+  "first": 15644,
+  "mean": 11865
+ },
+ "recordSeconds": 1780.246,
+ "totalSeconds": 2449.612,
+ "consoleErrors": [],
+ "output": {
+  "mp4": "develop/fabone-develop-1600x900-30fps.mp4",
+  "bytes": 1113263,
+  "pngFrames": 150,
+  "mp4Frames": 150,
+  "size": [
+   1600,
+   900
+  ],
+  "duration": "00:00:05.00",
+  "seconds": 5.0,
+  "verified": true,
+  "stills": {
+   "first": 0,
+   "third1": 50,
+   "third2": 99,
+   "last": 149
+  },
+  "contactSheet": "develop/contact-develop.jpg",
+  "sheetFrames": [
+   0,
+   30,
+   60,
+   90,
+   120,
+   149
+  ],
+  "decodeErrors": ""
+ }
+}

@@ -1,0 +1,12 @@
+{ "name": "bay",
+  "url": "http://127.0.0.1:4183/?step=coat&virt=1&quality=high",
+  "warm": { "w": 1140, "h": 600 },
+  "w": 1600, "h": 960, "expect": [1600, 900],
+  "setup": [ {"wait": 3000}, {"advance": 150},
+             {"eval": "window.__fabStores.useClock.getState().pause()"}, {"advance": 2},
+             {"resize": true},
+             {"eval": "window.__fabStores.useApp.getState().navigate({mode:'explore'})"},
+             {"settleSize": true}, {"advance": 4} ],
+  "during": [ {"frame": 50, "eval": "window.__fabStores.useApp.getState().navigate({mode:'explore', machine:'scanner'})"} ],
+  "frames": 180,
+  "outDir": "out/bay" }

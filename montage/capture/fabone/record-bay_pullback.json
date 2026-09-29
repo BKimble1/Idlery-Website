@@ -1,0 +1,95 @@
+{
+ "shot": "bay_pullback (bonus; frames 0-49 of take 1 of shot A)",
+ "exactUrl": "http://127.0.0.1:4183/?step=coat&virt=1&quality=high&capture=1",
+ "server": "vite preview of the production build of branch r4 @ 822bb0f on 127.0.0.1:4183",
+ "windowDuringSetup": {
+  "w": 1140,
+  "h": 600
+ },
+ "windowWhileRecording": {
+  "w": 1600,
+  "h": 960
+ },
+ "canvasWhileRecording": {
+  "drawingBuffer": [
+   1600,
+   900
+  ],
+  "cssRect": [
+   0,
+   60,
+   1600,
+   900
+  ],
+  "qualityTier": "high",
+  "pixelRatio": 1
+ },
+ "setup": [
+  {
+   "wait": 3000
+  },
+  {
+   "advance": 150
+  },
+  {
+   "eval": "window.__fabStores.useClock.getState().pause()"
+  },
+  {
+   "advance": 2
+  },
+  {
+   "resize": true
+  },
+  {
+   "eval": "window.__fabStores.useApp.getState().navigate({mode:'explore'})"
+  },
+  {
+   "settleSize": true
+  },
+  {
+   "advance": 4
+  }
+ ],
+ "framesKept": "0-49 (50 frames). Take 1 then ran its during-event at frame 50 (navigate to the scanner while the pull-back was still easing), and the camera jumped to the scanner in one frame, so take 1 was stopped and only frames 0-49 kept.",
+ "during_not_included": [
+  {
+   "frame": 50,
+   "eval": "window.__fabStores.useApp.getState().navigate({mode:'explore', machine:'scanner'})"
+  }
+ ],
+ "renderMsPerFrame_logged_every_10th": [
+  71359,
+  10275,
+  8326,
+  6646,
+  4223,
+  16406,
+  10159
+ ],
+ "output": {
+  "mp4": "bay_pullback/fabone-bay_pullback-1600x900-30fps.mp4",
+  "bytes": 3898540,
+  "pngFrames": 50,
+  "mp4Frames": 50,
+  "size": [
+   1600,
+   900
+  ],
+  "duration": "00:00:01.67",
+  "seconds": 1.6666666666666667,
+  "verified": true,
+  "stills": {
+   "first": 0,
+   "third1": 16,
+   "third2": 33,
+   "last": 49
+  },
+  "contactSheet": "bay_pullback/contact-bay_pullback.jpg",
+  "sheetFrames": [
+   0,
+   30,
+   49
+  ],
+  "decodeErrors": ""
+ }
+}

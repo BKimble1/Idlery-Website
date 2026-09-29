@@ -1,0 +1,19 @@
+{
+  "name": "idlery-website",
+  "private": true,
+  "description": "Source for idlery.com. The deployable site is site/; nothing here is needed at runtime.",
+  "type": "module",
+  "scripts": {
+    "serve": "node scripts/serve.mjs",
+    "check": "node scripts/check_site.mjs",
+    "build": "python3 scripts/build.py",
+    "assets": "python3 scripts/build_assets.py",
+    "montage": "python3 scripts/build_montage.py",
+    "zip": "python3 scripts/make_zip.py"
+  },
+  "devDependencies": {
+    "@fontsource-variable/manrope": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "playwright": "1.56.1"
+  }
+}

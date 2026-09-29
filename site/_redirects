@@ -1,0 +1,74 @@
+# Netlify redirect rules for idlery.com
+# Format: <from>  <to>  <status>      Docs: https://docs.netlify.com/routing/redirects/
+#
+# Rules run top to bottom and the first match wins. A rule never replaces a
+# real page unless its status ends in "!". Anything unmatched gets 404.html.
+
+# ---------------------------------------------------------------------------
+# Destinations and App Store links. Edit site.config.json, then run
+# python3 scripts/build.py, which rewrites this block.
+# @generated from site.config.json by scripts/build.py -- do not edit by hand
+# /simulations/ is served by this site (/simulations/).
+# /portfolio/ is served by this site (/portfolio/).
+/corecredit/download    https://apps.apple.com/app/corecredit-core-return-ledger/id6802336957    302
+/elemora/download    https://apps.apple.com/us/app/elemora-periodic-table/id6812577166    302
+# /@generated
+
+# ---------------------------------------------------------------------------
+# Other hostnames. These match on the host, so idlery.com itself is untouched,
+# and each is inert until that hostname is attached to this Netlify site.
+# www.idlery.com needs no rule: Netlify redirects www to the primary domain.
+# Domain aliases such as idleryservices.com get no automatic redirect, so:
+https://idleryservices.com/*        https://idlery.com/:splat     301!
+http://idleryservices.com/*         https://idlery.com/:splat     301!
+https://www.idleryservices.com/*    https://idlery.com/:splat     301!
+http://www.idleryservices.com/*     https://idlery.com/:splat     301!
+# karnwold.idlery.com is an alternate entry point to the game, never a second
+# copy of it (see "Hostnames" in README.md). No DNS record exists for it yet.
+https://karnwold.idlery.com/*       https://karnwold.com/:splat   301!
+http://karnwold.idlery.com/*        https://karnwold.com/:splat   301!
+
+# ---------------------------------------------------------------------------
+# Addresses earlier versions of idlery.com published, so old links still land.
+/home                /                     301
+/approach            /about/               301
+/contact             /support/             301
+/products            /work/                301
+/games               /work/                301
+/privacy             /legal/#privacy       301
+/privacy-policy      /legal/#privacy       301
+/terms               /legal/#terms         301
+/terms-of-use        /legal/#terms         301
+/karnwold.html       /karnwold/            301
+/elemora.html        /elemora/             301
+/corecredit.html     /corecredit/          301
+/simulation          /simulations/         301
+/fab-one             /simulations/         301
+/fabone              /simulations/         301
+
+# /app, /download and /app-store were printed on CoreCredit paperwork before
+# there was a second product, so they keep pointing at CoreCredit.
+/app                     /corecredit/      301
+/download                https://apps.apple.com/app/corecredit-core-return-ledger/id6802336957   302
+/app-store               https://apps.apple.com/app/corecredit-core-return-ledger/id6802336957   302
+/corecredit/app-store    https://apps.apple.com/app/corecredit-core-return-ledger/id6802336957   302
+
+# Short per-project aliases. Each project's own site is canonical for its
+# support, privacy and terms; idlery.com only points at them.
+/corecredit/support   https://corecredit.idlery.com/support   302
+/corecredit/privacy   https://corecredit.idlery.com/privacy   302
+/corecredit/terms     https://corecredit.idlery.com/terms     302
+/elemora/support      https://elemora.idlery.com/support      302
+/elemora/privacy      https://elemora.idlery.com/privacy      302
+/elemora/terms        https://elemora.idlery.com/terms        302
+/karnwold/play        https://karnwold.com                    302
+/karnwold/rules       https://karnwold.com/rules              302
+/karnwold/privacy     https://karnwold.com/privacy            302
+/karnwold/terms       https://karnwold.com/terms              302
+# karnwold.com/support is the "Help build Karnwold" funding page, not help, so
+# this alias goes to the Karnwold help card on idlery.com instead.
+/karnwold/support     /support/#karnwold                      302
+
+# Until September 2026 every /corecredit/* address went to corecredit.idlery.com.
+# Keep those deep links working; /corecredit/ itself is a real page and wins.
+/corecredit/*         https://corecredit.idlery.com/:splat    301

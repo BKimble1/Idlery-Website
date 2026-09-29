@@ -1,0 +1,10 @@
+{ "name": "develop",
+  "url": "http://127.0.0.1:4183/?step=develop&virt=1&quality=high",
+  "warm": { "w": 1172, "h": 510 },
+  "w": 1972, "h": 960, "expect": [1600, 900],
+  "setup": [ {"wait": 3000}, {"advance": 30},
+             {"eval": "window.__fabStores.useApp.getState().answer('develop', {choice: 0, correct: true}); window.__fabStores.useClock.setState({progress: 0, playing: true, pendingPlay: false})"},
+             {"advance": 75},
+             {"resize": true}, {"settleSize": true} ],
+  "frames": 150,
+  "outDir": "out/develop" }

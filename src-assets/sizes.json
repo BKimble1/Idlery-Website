@@ -1,0 +1,114 @@
+{
+ "card-corecredit": [
+  914,
+  686
+ ],
+ "card-elemora": [
+  1110,
+  832
+ ],
+ "card-fabone": [
+  1088,
+  816
+ ],
+ "card-karnwold": [
+  1088,
+  816
+ ],
+ "cc-cores": [
+  880,
+  1789
+ ],
+ "cc-dashboard": [
+  880,
+  1789
+ ],
+ "cc-dispute": [
+  880,
+  1788
+ ],
+ "cc-history": [
+  880,
+  1789
+ ],
+ "cc-ipad-dashboard": [
+  1440,
+  971
+ ],
+ "cc-scan": [
+  880,
+  1789
+ ],
+ "el-build": [
+  880,
+  1798
+ ],
+ "el-identify": [
+  880,
+  1798
+ ],
+ "el-oxygen": [
+  880,
+  1798
+ ],
+ "el-progress": [
+  880,
+  1798
+ ],
+ "el-study": [
+  880,
+  1798
+ ],
+ "el-table": [
+  880,
+  1798
+ ],
+ "fab-bay": [
+  1600,
+  900
+ ],
+ "fab-develop": [
+  1600,
+  900
+ ],
+ "fab-scanner": [
+  1600,
+  900
+ ],
+ "kw-concept": [
+  1200,
+  675
+ ],
+ "kw-game": [
+  1200,
+  639
+ ],
+ "kw-pieces": [
+  1024,
+  576
+ ],
+ "kw-prototype": [
+  1200,
+  675
+ ],
+ "pf-straingage": [
+  1030,
+  932
+ ],
+ "wide-corecredit": [
+  914,
+  571
+ ],
+ "wide-elemora": [
+  1170,
+  731
+ ],
+ "wide-fabone": [
+  1320,
+  825
+ ],
+ "wide-karnwold": [
+  1320,
+  703
+ ]
+}

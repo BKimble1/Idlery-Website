@@ -1,0 +1,12 @@
+{ "name": "bay",
+  "url": "http://127.0.0.1:4183/?explore&virt=1&quality=high",
+  "warm": { "w": 1120, "h": 690 },
+  "w": 1600, "h": 960, "expect": [1600, 900],
+  "setup": [ {"wait": 3000},
+             {"until": "(() => { const s = window.__fab.useStageInfo.getState(); return s.shown && !s.flying && !s.loading; })()", "max": 400},
+             {"advance": 5},
+             {"eval": "window.__p0 = window.__fab.camera.position.clone(); window.__fabStores.useApp.getState().navigate({mode:'explore', machine:'scanner'})"},
+             {"until": "window.__fab.camera.position.distanceTo(window.__p0) > 0.03", "max": 200},
+             {"resize": true}, {"settleSize": true} ],
+  "frames": 150,
+  "outDir": "out/bay" }

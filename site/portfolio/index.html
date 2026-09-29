@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blake Kimble — engineering portfolio | Idlery</title>
+<meta name="description" content="Engineering and design projects by Blake Kimble: a K-truss bridge, a hovercraft prototype, and a strain-gage lab simulator, with notes on what was built and how.">
+<link rel="canonical" href="https://idlery.com/portfolio/">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="Idlery">
+<meta property="og:title" content="Blake Kimble — engineering portfolio">
+<meta property="og:description" content="Engineering and design projects, with notes on what was built and how.">
+<meta property="og:url" content="https://idlery.com/portfolio/">
+<meta property="og:image" content="https://idlery.com/assets/img/og-portfolio.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!-- @head -->
+<meta name="theme-color" content="#0b1417">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/img/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preload" href="/assets/fonts/manrope-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/site.js" defer></script>
+<!-- /@head -->
+</head>
+<body data-section="portfolio">
+<!-- @header -->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Idlery home"><img src="/assets/img/idlery-wordmark.svg" width="96" height="40" alt="Idlery"></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span class="nav-toggle-icon" aria-hidden="true"></span>Menu</button>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="/work/">Work</a></li>
+        <li><a href="/simulations/">Simulations</a></li>
+        <li><a href="/apps/">Apps</a></li>
+        <li><a href="/portfolio/" aria-current="page">Portfolio</a></li>
+        <li><a href="/about/">About</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<!-- /@header -->
+
+<main id="main">
+
+  <div class="portfolio-head">
+    <header class="page-head page-head--split">
+      <div class="wrap">
+        <div>
+          <p class="label"><span class="swatch swatch--pf" aria-hidden="true"></span>Portfolio</p>
+          <h1>Blake Kimble</h1>
+        </div>
+        <p class="lede">Engineering and design projects, with notes on what was built and how. These are personal projects, separate from Idlery&rsquo;s products.</p>
+      </div>
+    </header>
+  </div>
+
+  <section class="section section--tight" aria-labelledby="projects-title">
+    <div class="wrap">
+      <h2 id="projects-title" class="visually-hidden">Projects</h2>
+      <ol class="cases">
+
+        <li class="case">
+          <div class="case-media">
+            <picture>
+              <source type="image/webp" srcset="/assets/img/pf-straingage-560.webp 560w, /assets/img/pf-straingage-1030.webp 1030w" sizes="(min-width: 860px) 34rem, 100vw">
+              <img src="/assets/img/pf-straingage-1030.jpg" width="1030" height="932" alt="The strain-gage lab simulator: a breadboard wired as a quarter bridge with an amplifier, the multimeter reading its output, and the beam model below." loading="lazy" decoding="async">
+            </picture>
+          </div>
+          <div class="case-body">
+            <p class="label">Software &middot; Instrumentation</p>
+            <h2>Strain-gage lab simulator</h2>
+            <p>A browser simulator for the ENP&nbsp;359 strain-gage lab. Place parts on a breadboard, wire a Wheatstone quarter bridge, load a beam, and probe the circuit with a multimeter.</p>
+            <ul class="facts-list">
+              <li><b>Built</b><span>An offline web app: SVG breadboard, beam view, floating multimeter, and a panel for every lab value.</span></li>
+              <li><b>How</b><span>Every reading comes from a DC modified-nodal-analysis solve of the circuit as actually wired. The interface never computes a reading itself.</span></li>
+              <li><b>Tested</b><span>Unit tests with independently derived expectations, and browser tests that drag, wire and probe.</span></li>
+              <li><b>Source</b><span><a href="https://github.com/BKimble1/Lab-3-Simulation">github.com/BKimble1/Lab-3-Simulation</a></span></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="case">
+          <div class="case-media">
+            <div class="case-pending">
+              <p class="label">Photos to come</p>
+              <p>Build photographs, the analysis and the test results will be added here.</p>
+            </div>
+          </div>
+          <div class="case-body">
+            <p class="label">Structures &middot; Analysis &middot; Testing</p>
+            <h2>K-truss bridge</h2>
+            <p>A K-truss bridge, analyzed, built, and tested.</p>
+            <ul class="facts-list">
+              <li><b>Truss</b><span>K-truss</span></li>
+              <li><b>Work</b><span>Analysis, construction, and testing</span></li>
+              <li><b>Status</b><span>Documentation in progress</span></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="case">
+          <div class="case-media">
+            <div class="case-pending">
+              <p class="label">Photos to come</p>
+              <p>Photographs of the prototype and notes on its build will be added here.</p>
+            </div>
+          </div>
+          <div class="case-body">
+            <p class="label">Physical prototype</p>
+            <h2>Hovercraft prototype</h2>
+            <p>A physical hovercraft prototype.</p>
+            <ul class="facts-list">
+              <li><b>Type</b><span>Physical prototype</span></li>
+              <li><b>Status</b><span>Documentation in progress</span></li>
+            </ul>
+          </div>
+        </li>
+
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="more-title">
+    <div class="wrap">
+      <div class="note-row">
+        <p id="more-title">Idlery&rsquo;s products, including the Fab One chip-fab simulation, are on their own pages.</p>
+        <a class="arrow-link" href="/work/">Idlery&rsquo;s work</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- @footer -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Idlery home"><img src="/assets/img/idlery-wordmark-light.svg" width="132" height="55" alt="Idlery" loading="lazy"></a>
+        <p>Idlery Services LLC is an independent studio making apps, simulations, and games.</p>
+        <p><a class="footer-mail" href="mailto:support@idlery.com">support@idlery.com</a></p>
+      </div>
+      <nav aria-labelledby="footer-explore">
+        <h2 id="footer-explore">Explore</h2>
+        <ul>
+          <li><a href="/work/">Work</a></li>
+          <li><a href="/simulations/">Simulations</a></li>
+          <li><a href="/apps/">Apps</a></li>
+          <li><a href="/portfolio/">Portfolio</a></li>
+          <li><a href="/about/">About</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="footer-projects">
+        <h2 id="footer-projects">Projects</h2>
+        <ul>
+          <li><a href="/karnwold/">Karnwold</a></li>
+          <li><a href="/simulations/">Fab One</a></li>
+          <li><a href="/corecredit/">CoreCredit</a></li>
+          <li><a href="/elemora/">Elemora</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="footer-help">
+        <h2 id="footer-help">Help</h2>
+        <ul>
+          <li><a href="/support/">Support</a></li>
+          <li><a href="mailto:support@idlery.com">Contact</a></li>
+          <li><a href="/legal/#privacy">Privacy</a></li>
+          <li><a href="/legal/#terms">Terms</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-legal">
+      <p>&copy; 2026 Idlery Services LLC. All rights reserved.</p>
+      <p>Apple and the Apple logo are trademarks of Apple Inc., registered in the U.S. and other countries and regions. App Store is a service mark of Apple Inc.</p>
+    </div>
+  </div>
+</footer>
+<!-- /@footer -->
+</body>
+</html>

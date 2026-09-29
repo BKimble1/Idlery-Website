@@ -1,0 +1,25 @@
+{
+  "_README": [
+    "Where the site's navigation points, in one place. Edit, then run:",
+    "    python3 scripts/build.py",
+    "which rewrites the header, footer and head of every page in site/ and the",
+    "generated block of site/_redirects. `python3 scripts/build.py --check`",
+    "fails if any page has drifted from these values.",
+    "",
+    "destinations.simulations / destinations.portfolio: '/simulations/' and",
+    "'/portfolio/' are the pages in this repository. When simulations.idlery.com",
+    "or portfolio.idlery.com is live, set the value to its full https:// URL.",
+    "The navigation then links straight there, and build.py adds a forced 301",
+    "from the old path so every existing link follows."
+  ],
+  "site_url": "https://idlery.com",
+  "support_email": "support@idlery.com",
+  "destinations": {
+    "simulations": "/simulations/",
+    "portfolio": "/portfolio/"
+  },
+  "app_store": {
+    "corecredit": "https://apps.apple.com/app/corecredit-core-return-ledger/id6802336957",
+    "elemora": "https://apps.apple.com/us/app/elemora-periodic-table/id6812577166"
+  }
+}

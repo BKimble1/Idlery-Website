@@ -1,0 +1,8 @@
+# Only used if this repository is connected to Netlify for automatic deploys.
+# A drag-and-drop deploy of dist/idlery-netlify.zip ignores this file; Netlify
+# then reads site/_headers and site/_redirects from the ZIP itself.
+
+[build]
+  # The site is plain static files; there is nothing to compile.
+  command = ""
+  publish = "site"

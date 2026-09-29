@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Idlery — apps, simulations, and games</title>
+<meta name="description" content="Idlery Services LLC is an independent studio making iOS apps, interactive simulations, and games: Karnwold, Fab One, CoreCredit, and Elemora.">
+<link rel="canonical" href="https://idlery.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Idlery">
+<meta property="og:title" content="Idlery — apps, simulations, and games">
+<meta property="og:description" content="An independent studio making iOS apps, interactive simulations, and games.">
+<meta property="og:url" content="https://idlery.com/">
+<meta property="og:image" content="https://idlery.com/assets/img/og-idlery.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Idlery wordmark beside real images of Karnwold, Fab One, CoreCredit and Elemora.">
+<meta name="twitter:card" content="summary_large_image">
+<!-- @head -->
+<meta name="theme-color" content="#0b1417">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/img/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preload" href="/assets/fonts/manrope-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/site.js" defer></script>
+<!-- /@head -->
+<!-- A JSON-LD block is data, never executed, so script-src 'self' still holds. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://idlery.com/#org",
+  "name": "Idlery Services LLC",
+  "alternateName": "Idlery",
+  "url": "https://idlery.com/",
+  "logo": "https://idlery.com/assets/img/icon-512.png",
+  "email": "support@idlery.com",
+  "description": "An independent studio making iOS apps, interactive simulations, and games."
+}
+</script>
+</head>
+<body data-section="home" data-header="over">
+<!-- @header -->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header site-header--over">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Idlery home"><img src="/assets/img/idlery-wordmark-light.svg" width="96" height="40" alt="Idlery"></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span class="nav-toggle-icon" aria-hidden="true"></span>Menu</button>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="/work/">Work</a></li>
+        <li><a href="/simulations/">Simulations</a></li>
+        <li><a href="/apps/">Apps</a></li>
+        <li><a href="/portfolio/">Portfolio</a></li>
+        <li><a href="/about/">About</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<!-- /@header -->
+
+<main id="main">
+
+  <section class="hero" data-ambient-root aria-labelledby="hero-title">
+    <div class="hero-media">
+      <picture>
+        <source media="(max-width: 760px) and (orientation: portrait)" type="image/webp" srcset="/assets/video/hero-poster-portrait.webp" width="720" height="1280">
+        <source media="(max-width: 760px) and (orientation: portrait)" srcset="/assets/video/hero-poster-portrait.jpg" width="720" height="1280">
+        <source type="image/webp" srcset="/assets/video/hero-poster-1280.webp 1280w, /assets/video/hero-poster-1920.webp 1920w" sizes="100vw">
+        <img src="/assets/video/hero-poster-1920.jpg" width="1920" height="1080" alt="" fetchpriority="high" decoding="async">
+      </picture>
+      <!-- The montage: real footage and captures of Fab One, Karnwold, CoreCredit
+           and Elemora. site.js picks the landscape or portrait cut and plays it
+           only when motion is welcome; see scripts/build_montage.py. -->
+      <video data-ambient muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" disablepictureinpicture disableremoteplayback
+        data-landscape="/assets/video/hero-landscape" data-portrait="/assets/video/hero-portrait"
+        data-chapters-landscape='[{"t":0.0,"name":"Karnwold","kind":"Game"},{"t":5.3,"name":"Fab One","kind":"Simulation"},{"t":10.3,"name":"CoreCredit","kind":"iOS app"},{"t":12.5,"name":"Elemora","kind":"iOS app"},{"t":14.9,"name":"","kind":""}]' data-chapters-portrait='[{"t":0.0,"name":"Karnwold","kind":"Game"},{"t":4.9,"name":"Fab One","kind":"Simulation"},{"t":7.7,"name":"CoreCredit","kind":"iOS app"},{"t":9.9,"name":"Elemora","kind":"iOS app"},{"t":12.1,"name":"","kind":""}]'></video>
+    </div>
+    <div class="wrap">
+      <div class="hero-copy">
+        <h1 id="hero-title">Apps, simulations, and games, built properly.</h1>
+        <p class="hero-sub">Idlery is an independent studio. Here is what we have made so far, and what is on the bench.</p>
+        <a class="btn btn--light" href="/work/">See the work
+          <svg viewBox="0 0 20 20" aria-hidden="true" fill="currentColor"><path d="M11.6 4.3a1 1 0 0 1 1.4 0l5 5a1 1 0 0 1 0 1.4l-5 5a1 1 0 1 1-1.4-1.4l3.3-3.3H3a1 1 0 1 1 0-2h11.9l-3.3-3.3a1 1 0 0 1 0-1.4Z"/></svg>
+        </a>
+      </div>
+      <div class="hero-controls">
+        <p class="hero-now" data-ambient-now aria-hidden="true"></p>
+        <button class="hero-toggle" type="button" data-ambient-toggle hidden>
+          <svg class="icon-pause" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><rect x="2" y="1.5" width="3.5" height="11" rx="1"/><rect x="8.5" y="1.5" width="3.5" height="11" rx="1"/></svg>
+          <svg class="icon-play" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 1.8v10.4a.8.8 0 0 0 1.2.7l8.4-5.2a.8.8 0 0 0 0-1.4L4.2 1.1A.8.8 0 0 0 3 1.8Z"/></svg>
+          <span data-ambient-label>Pause</span><span class="visually-hidden"> the background video</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="featured" aria-labelledby="featured-title">
+    <div class="carousel" data-carousel>
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="featured-title">Featured work</h2>
+          <div class="section-head-tools">
+            <div class="carousel-buttons" hidden>
+              <button class="carousel-btn" type="button" data-dir="-1" aria-controls="featured-track" aria-label="Previous project">
+                <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11.6 4.3a1 1 0 0 1 1.4 0l5 5a1 1 0 0 1 0 1.4l-5 5a1 1 0 1 1-1.4-1.4l3.3-3.3H3a1 1 0 1 1 0-2h11.9l-3.3-3.3a1 1 0 0 1 0-1.4Z"/></svg>
+              </button>
+              <button class="carousel-btn" type="button" data-dir="1" aria-controls="featured-track" aria-label="Next project">
+                <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11.6 4.3a1 1 0 0 1 1.4 0l5 5a1 1 0 0 1 0 1.4l-5 5a1 1 0 1 1-1.4-1.4l3.3-3.3H3a1 1 0 1 1 0-2h11.9l-3.3-3.3a1 1 0 0 1 0-1.4Z"/></svg>
+              </button>
+            </div>
+            <a class="arrow-link" href="/work/">All work</a>
+          </div>
+        </div>
+      </div>
+
+      <ul class="carousel-track" id="featured-track">
+        <li>
+          <article class="card">
+            <div class="card-media media-kw">
+              <picture>
+                <source type="image/webp" srcset="/assets/img/card-karnwold-640.webp 640w, /assets/img/card-karnwold-1088.webp 1088w" sizes="(min-width: 760px) 34rem, 82vw">
+                <img src="/assets/img/card-karnwold-1088.jpg" width="1088" height="816" alt="A Karnwold game in a browser: four circular village boards with white pieces around the card decks on a dark wooden table." loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="card-body">
+              <p class="label"><span class="swatch swatch--kw" aria-hidden="true"></span>Game &middot; Playable online</p>
+              <h3 class="card-title"><a href="/karnwold/">Karnwold</a></h3>
+              <p class="card-text">A village-building siege game for two to five players. Play it in your browser today; the tabletop edition is on the way.</p>
+              <span class="card-cta" aria-hidden="true">Explore Karnwold</span>
+            </div>
+          </article>
+        </li>
+        <li>
+          <article class="card">
+            <div class="card-media media-fab">
+              <picture>
+                <source type="image/webp" srcset="/assets/img/card-fabone-640.webp 640w, /assets/img/card-fabone-1088.webp 1088w" sizes="(min-width: 760px) 34rem, 82vw">
+                <img src="/assets/img/card-fabone-1088.jpg" width="1088" height="816" alt="Fab One&rsquo;s lithography scanner, rendered in the simulation: a violet light path runs down the lens column onto a wafer." loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="card-body">
+              <p class="label"><span class="swatch swatch--fab" aria-hidden="true"></span>Simulation &middot; In development</p>
+              <h3 class="card-title"><a href="/simulations/">Fab One</a></h3>
+              <p class="card-text">Follow one silicon wafer through a chip fab, machine by machine, until it becomes a working circuit.</p>
+              <span class="card-cta" aria-hidden="true">Preview Fab One</span>
+            </div>
+          </article>
+        </li>
+        <li>
+          <article class="card">
+            <div class="card-media media-cc">
+              <picture>
+                <source type="image/webp" srcset="/assets/img/card-corecredit-640.webp 640w, /assets/img/card-corecredit-914.webp 914w" sizes="(min-width: 760px) 34rem, 82vw">
+                <img src="/assets/img/card-corecredit-914.jpg" width="914" height="686" alt="CoreCredit on iPhone: money at risk of $1,048.25, $500.00 overdue, and an Add core button." loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="card-body">
+              <p class="label"><span class="swatch swatch--cc" aria-hidden="true"></span>iOS app &middot; On the App Store</p>
+              <h3 class="card-title"><a href="/corecredit/">CoreCredit</a></h3>
+              <p class="card-text">Helps repair shops keep track of refundable core charges until every vendor credit actually comes back.</p>
+              <span class="card-cta" aria-hidden="true">See CoreCredit</span>
+            </div>
+          </article>
+        </li>
+        <li>
+          <article class="card">
+            <div class="card-media media-el">
+              <picture>
+                <source type="image/webp" srcset="/assets/img/card-elemora-640.webp 640w, /assets/img/card-elemora-1110.webp 1110w" sizes="(min-width: 760px) 34rem, 82vw">
+                <img src="/assets/img/card-elemora-1110.jpg" width="1110" height="832" alt="Elemora's periodic table: all 118 elements, each tile tinted by its family." loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="card-body">
+              <p class="label"><span class="swatch swatch--el" aria-hidden="true"></span>iOS app &middot; On the App Store</p>
+              <h3 class="card-title"><a href="/elemora/">Elemora</a></h3>
+              <p class="card-text">The periodic table as something to explore, study, and build with, not just memorize.</p>
+              <span class="card-cta" aria-hidden="true">See Elemora</span>
+            </div>
+          </article>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="paths-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="paths-title">Explore by kind</h2>
+      </div>
+      <ul class="paths">
+        <li>
+          <a class="path" href="/simulations/">
+            <span class="path-num">01</span>
+            <h3>Simulations</h3>
+            <p>Interactive models of how real things are made, starting with a chip fab.</p>
+            <span class="path-go" aria-hidden="true"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M11.6 4.3a1 1 0 0 1 1.4 0l5 5a1 1 0 0 1 0 1.4l-5 5a1 1 0 1 1-1.4-1.4l3.3-3.3H3a1 1 0 1 1 0-2h11.9l-3.3-3.3a1 1 0 0 1 0-1.4Z"/></svg></span>
+          </a>
+        </li>
+        <li>
+          <a class="path" href="/apps/">
+            <span class="path-num">02</span>
+            <h3>Apps</h3>
+            <p>Focused iOS apps, each built around one job, both on the App Store.</p>
+            <span class="path-go" aria-hidden="true"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M11.6 4.3a1 1 0 0 1 1.4 0l5 5a1 1 0 0 1 0 1.4l-5 5a1 1 0 1 1-1.4-1.4l3.3-3.3H3a1 1 0 1 1 0-2h11.9l-3.3-3.3a1 1 0 0 1 0-1.4Z"/></svg></span>
+          </a>
+        </li>
+        <li>
+          <a class="path" href="/portfolio/">
+            <span class="path-num">03</span>
+            <h3>Portfolio</h3>
+            <p>Blake Kimble&rsquo;s engineering and design projects: what was built, and how.</p>
+            <span class="path-go" aria-hidden="true"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M11.6 4.3a1 1 0 0 1 1.4 0l5 5a1 1 0 0 1 0 1.4l-5 5a1 1 0 1 1-1.4-1.4l3.3-3.3H3a1 1 0 1 1 0-2h11.9l-3.3-3.3a1 1 0 0 1 0-1.4Z"/></svg></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--alt" aria-labelledby="about-title">
+    <div class="wrap about-band">
+      <div>
+        <p class="label">About</p>
+        <h2 id="about-title">One studio, several kinds of work.</h2>
+      </div>
+      <div class="about-text">
+        <p>Idlery Services LLC is an independent studio making iOS apps, interactive simulations, and games. Each project is built to do one thing well, and to say plainly what it does.</p>
+        <p>Questions, feedback, or something not working? Write to <a href="mailto:support@idlery.com">support@idlery.com</a>.</p>
+        <div class="actions">
+          <a class="btn btn--primary" href="/about/">About Idlery</a>
+          <a class="btn btn--ghost" href="/support/">Support</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- @footer -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="Idlery home"><img src="/assets/img/idlery-wordmark-light.svg" width="132" height="55" alt="Idlery" loading="lazy"></a>
+        <p>Idlery Services LLC is an independent studio making apps, simulations, and games.</p>
+        <p><a class="footer-mail" href="mailto:support@idlery.com">support@idlery.com</a></p>
+      </div>
+      <nav aria-labelledby="footer-explore">
+        <h2 id="footer-explore">Explore</h2>
+        <ul>
+          <li><a href="/work/">Work</a></li>
+          <li><a href="/simulations/">Simulations</a></li>
+          <li><a href="/apps/">Apps</a></li>
+          <li><a href="/portfolio/">Portfolio</a></li>
+          <li><a href="/about/">About</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="footer-projects">
+        <h2 id="footer-projects">Projects</h2>
+        <ul>
+          <li><a href="/karnwold/">Karnwold</a></li>
+          <li><a href="/simulations/">Fab One</a></li>
+          <li><a href="/corecredit/">CoreCredit</a></li>
+          <li><a href="/elemora/">Elemora</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="footer-help">
+        <h2 id="footer-help">Help</h2>
+        <ul>
+          <li><a href="/support/">Support</a></li>
+          <li><a href="mailto:support@idlery.com">Contact</a></li>
+          <li><a href="/legal/#privacy">Privacy</a></li>
+          <li><a href="/legal/#terms">Terms</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-legal">
+      <p>&copy; 2026 Idlery Services LLC. All rights reserved.</p>
+      <p>Apple and the Apple logo are trademarks of Apple Inc., registered in the U.S. and other countries and regions. App Store is a service mark of Apple Inc.</p>
+    </div>
+  </div>
+</footer>
+<!-- /@footer -->
+</body>
+</html>

@@ -1,0 +1,125 @@
+{
+ "shot": "bay",
+ "exactUrl": "http://127.0.0.1:4183/?explore&virt=1&quality=high&capture=1",
+ "server": "vite preview of the production build (npm run build) of branch r4 @ 822bb0f, on 127.0.0.1:4183 (4173 was taken by another job)",
+ "browser": "Playwright 1.56.1 chromium (headless shell 1194), --use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist --enable-webgl",
+ "deviceScaleFactor": 1,
+ "windowDuringSetup": {
+  "w": 1120,
+  "h": 690
+ },
+ "windowWhileRecording": {
+  "w": 1600,
+  "h": 960
+ },
+ "canvasWhileRecording": {
+  "cssRect": [
+   0,
+   60,
+   1600,
+   900
+  ],
+  "drawingBuffer": [
+   1600,
+   900
+  ],
+  "pixelRatio": 1,
+  "qualityTier": "high"
+ },
+ "appStateAtFrame0": {
+  "mode": "explore",
+  "step": 0,
+  "machine": "scanner",
+  "demo": false,
+  "scaleOverride": null,
+  "lightPath": false
+ },
+ "stageAtFrame0": {
+  "scale": "fab",
+  "space": "world",
+  "freeLook": false,
+  "flying": true,
+  "loading": null,
+  "failed": null,
+  "shown": true,
+  "cutaway": false
+ },
+ "setup": [
+  {
+   "wait": 3000,
+   "ms": 3005
+  },
+  {
+   "until": "(() => { const s = window.__fab.useStageInfo.getState(); return s.shown && !s.flying && !s.loading; })()",
+   "max": 400,
+   "framesTaken": 1,
+   "ms": 1063
+  },
+  {
+   "advance": 5,
+   "ms": 56
+  },
+  {
+   "eval": "window.__p0 = window.__fab.camera.position.clone(); window.__fabStores.useApp.getState().navigate({mode:'explore', machine:'scanner'})",
+   "ms": 29
+  },
+  {
+   "until": "window.__fab.camera.position.distanceTo(window.__p0) > 0.03",
+   "max": 200,
+   "framesTaken": 11,
+   "ms": 11446
+  },
+  {
+   "resize": true,
+   "ms": 338
+  },
+  {
+   "settleSize": true,
+   "ms": 24096
+  }
+ ],
+ "during": [],
+ "framesRequested": 150,
+ "framesRecorded": 150,
+ "fps": 30,
+ "clock": "virtual (?virt=1): each frame = window.__fabAdvance(1) = 1/30 s, then gl.readPixels of the default framebuffer (canvas only, no DOM)",
+ "renderMsPerFrame": {
+  "median": 3692,
+  "p90": 5139,
+  "max": 7783,
+  "first": 1832,
+  "mean": 3771
+ },
+ "recordSeconds": 566.869,
+ "totalSeconds": 609.794,
+ "consoleErrors": [],
+ "output": {
+  "mp4": "bay/fabone-bay-1600x900-30fps.mp4",
+  "bytes": 3908042,
+  "pngFrames": 150,
+  "mp4Frames": 150,
+  "size": [
+   1600,
+   900
+  ],
+  "duration": "00:00:05.00",
+  "seconds": 5.0,
+  "verified": true,
+  "stills": {
+   "first": 0,
+   "third1": 50,
+   "third2": 99,
+   "last": 149
+  },
+  "contactSheet": "bay/contact-bay.jpg",
+  "sheetFrames": [
+   0,
+   30,
+   60,
+   90,
+   120,
+   149
+  ],
+  "decodeErrors": ""
+ }
+}

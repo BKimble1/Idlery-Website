@@ -1,0 +1,12 @@
+# Tooling and generated output -- never part of the deployable site.
+node_modules/
+.preview/
+montage/build/
+dist/
+*.zip
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+*.swp
+__pycache__/

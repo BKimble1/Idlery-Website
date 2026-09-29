@@ -1,0 +1,22 @@
+# Netlify response headers for idlery.com
+# Docs: https://docs.netlify.com/routing/headers/
+#
+# The only change from the previous deploy is script-src: 'none' became 'self',
+# so the one local file /assets/js/site.js can run (menu, hero video controls,
+# carousel buttons). Inline scripts, inline styles and every other origin stay
+# blocked. Video, fonts and images are same-origin and covered by default-src.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; form-action 'none'; frame-ancestors 'self'; base-uri 'self'
+
+# Asset names carry no content hash, so keep caching conservative: an hour,
+# then revalidate in the background. Raise it only if names become hashed.
+/assets/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/favicon.ico
+  Cache-Control: public, max-age=86400
