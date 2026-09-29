@@ -14,8 +14,11 @@ the regions between these markers are generated:
 
 A page says which nav item it belongs to with <body data-section="work">, and
 the home page asks for the light-on-video header with data-header="over".
-Destinations (where "Simulations" and "Portfolio" point) and the App Store
-links come from site.config.json.
+Destinations (where "Simulations", "Products" and "Portfolio" point) and the
+App Store links come from site.config.json. A link in page content that goes
+to a destination carries data-dest="<name>"; its href is rewritten from the
+config, and a destination URL typed without data-dest fails the lint, so the
+config stays the one place these addresses live.
 
 Standard library only.
 """
@@ -33,7 +36,7 @@ SITE = ROOT / "site"
 PARTIALS = ROOT / "partials"
 CONFIG = json.loads((ROOT / "site.config.json").read_text())
 
-SECTIONS = ("work", "simulations", "apps", "portfolio", "about")
+SECTIONS = ("work", "about")
 REGIONS = ("head", "header", "footer")
 
 
@@ -52,6 +55,23 @@ def render(template: str, *, section: str, over: bool) -> str:
     return out.rstrip("\n")
 
 
+DEST_TAG = re.compile(r'<a\b[^>]*\bdata-dest="([a-z]+)"[^>]*>')
+
+
+def stamp_dest_links(html: str, path: Path) -> str:
+    """Point every <a data-dest="name"> at its destination from the config."""
+    def fix(m: re.Match) -> str:
+        name = m.group(1)
+        if name not in CONFIG["destinations"]:
+            raise SystemExit(f"{path}: data-dest=\"{name}\" is not in site.config.json destinations")
+        tag = m.group(0)
+        url = CONFIG["destinations"][name]
+        if re.search(r'\bhref="[^"]*"', tag):
+            return re.sub(r'\bhref="[^"]*"', f'href="{url}"', tag, count=1)
+        return tag.replace("<a", f'<a href="{url}"', 1)
+    return DEST_TAG.sub(fix, html)
+
+
 def stamp(html: str, path: Path) -> str:
     body = re.search(r"<body([^>]*)>", html)
     if not body:
@@ -68,16 +88,16 @@ def stamp(html: str, path: Path) -> str:
         partial = (PARTIALS / f"{region}.html").read_text()
         filled = render(partial, section=section, over=over)
         html = pattern.sub(lambda m: m.group(1) + filled + "\n" + m.group(2).lstrip("\n"), html)
-    return html
+    return stamp_dest_links(html, path)
 
 
 def redirects_block() -> str:
     lines = ["# @generated from site.config.json by scripts/build.py -- do not edit by hand"]
-    for name, url in CONFIG["destinations"].items():
-        if url.startswith("http"):
-            lines.append(f"/{name}/*    {url.rstrip('/')}/:splat    301!")
-        else:
-            lines.append(f"# /{name}/ is served by this site ({url}).")
+    for path, name in CONFIG["retired_paths"].items():
+        url = CONFIG["destinations"][name]
+        base = path.rstrip("/")
+        lines.append(f"{base}    {url}    301!")
+        lines.append(f"{base}/*    {url.rstrip('/')}/:splat    301!")
     for app, url in CONFIG["app_store"].items():
         lines.append(f"/{app}/download    {url}    302")
     lines.append("# /@generated")
@@ -162,6 +182,14 @@ def lint(path: Path, html: str) -> list[str]:
         for found in re.findall(r"https://apps\.apple\.com/[^\"' ]*", html):
             if app in found and found != url:
                 errs.append(f"App Store link {found} does not match site.config.json ({url})")
+    hosts = {re.sub(r"^https?://([^/]+).*$", r"\1", u) for u in CONFIG["destinations"].values() if u.startswith("http")}
+    for tag in re.findall(r"<a\b[^>]*>", html):
+        href = (re.search(r'\bhref="([^"]*)"', tag) or [None, ""])[1]
+        host = re.sub(r"^https?://([^/]+).*$", r"\1", href) if href.startswith("http") else ""
+        if host in hosts and "data-dest=" not in tag:
+            errs.append(f"link to {href} without data-dest (let site.config.json own it)")
+    if "\u2014" in html:
+        errs.append("an em dash (the site's writing rule: use other punctuation)")
     return errs
 
 

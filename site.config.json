@@ -2,21 +2,29 @@
   "_README": [
     "Where the site's navigation points, in one place. Edit, then run:",
     "    python3 scripts/build.py",
-    "which rewrites the header, footer and head of every page in site/ and the",
-    "generated block of site/_redirects. `python3 scripts/build.py --check`",
-    "fails if any page has drifted from these values.",
+    "which rewrites the header, footer and head of every page in site/, every link",
+    "marked data-dest=\"<name>\" in page content, and the generated block of",
+    "site/_redirects. `python3 scripts/build.py --check` fails if any page has",
+    "drifted from these values, or links to a destination without data-dest.",
     "",
-    "destinations.simulations / destinations.portfolio: '/simulations/' and",
-    "'/portfolio/' are the pages in this repository. When simulations.idlery.com",
-    "or portfolio.idlery.com is live, set the value to its full https:// URL.",
-    "The navigation then links straight there, and build.py adds a forced 301",
-    "from the old path so every existing link follows."
+    "destinations: the separate Idlery sites the navigation links straight to.",
+    "Products, Simulations and Portfolio are their own sites; idlery.com does not",
+    "host copies of them. A destination may be offline until that site is set up.",
+    "",
+    "retired_paths: addresses idlery.com used to serve itself. Each gets a forced",
+    "301 to its destination, with and without the trailing slash, so old links follow."
   ],
   "site_url": "https://idlery.com",
   "support_email": "support@idlery.com",
   "destinations": {
-    "simulations": "/simulations/",
-    "portfolio": "/portfolio/"
+    "simulations": "https://simulations.idlery.com/",
+    "products": "https://products.idlery.com/",
+    "portfolio": "https://portfolio.idlery.com/"
+  },
+  "retired_paths": {
+    "/simulations/": "simulations",
+    "/apps/": "products",
+    "/portfolio/": "portfolio"
   },
   "app_store": {
     "corecredit": "https://apps.apple.com/app/corecredit-core-return-ledger/id6802336957",

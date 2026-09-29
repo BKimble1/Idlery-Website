@@ -10,9 +10,14 @@
 // request, horizontal overflow, a broken image or one whose width/height
 // attributes disagree with the file, a small tap target, a dead internal
 // link, a redirect rule that does not do what it says, a third-party request,
-// a hostname in a link that does not resolve, and any of the behaviour checks
-// below (hero video, reduced motion, no-script layout, keyboard, menu).
-// Full-page screenshots land in .preview/.
+// a hostname in a link that does not resolve, a Products/Simulations/Portfolio
+// link that does not match site.config.json, and any of the behaviour checks
+// below (hero video, reduced motion, no-script layout, keyboard, featured-work
+// reel, menu). Full-page screenshots land in .preview/.
+//
+// The destinations in site.config.json (products., simulations. and
+// portfolio.idlery.com) are separate sites that may not be live yet. Links to
+// them are checked against the config, not fetched or resolved.
 
 import { chromium } from "playwright";
 import { execFileSync } from "node:child_process";
@@ -32,12 +37,14 @@ const BASE = `http://127.0.0.1:${PORT}`;
 const SHOTS = join(ROOT, ".preview");
 mkdirSync(SHOTS, { recursive: true });
 
-const PAGES = ["/", "/work/", "/simulations/", "/apps/", "/portfolio/", "/about/", "/karnwold/",
-  "/corecredit/", "/elemora/", "/support/", "/legal/"];
+const CONFIG = JSON.parse(readFileSync(join(ROOT, "site.config.json"), "utf8"));
+const DEST_HOSTS = new Set(Object.values(CONFIG.destinations).map((u) => new URL(u).host));
+const PAGES = ["/", "/work/", "/about/", "/karnwold/", "/corecredit/", "/elemora/", "/support/",
+  "/privacy/", "/terms/", "/legal/"];
 const VIEWPORTS = [
   { name: "phone-360", width: 360, height: 780 },
   { name: "phone", width: 390, height: 844 },
-  { name: "tablet", width: 834, height: 1112 },
+  { name: "tablet", width: 834, height: 1194 },
   { name: "desktop", width: 1440, height: 900 },
   { name: "wide", width: 1920, height: 1080 },
 ];
@@ -104,8 +111,9 @@ for (const colorScheme of ["light", "dark"]) {
             if (d > 0.02) out.ratio.push(`${img.currentSrc.split("/").pop()} attr ${w}x${h} vs file ${img.naturalWidth}x${img.naturalHeight}`);
           }
         }
-        const targets = document.querySelectorAll("header a, header button, footer a, .btn, .carousel-btn, .hero-toggle, .path, .card-title a, .tile h3 a, .help-card li a, .arrow-link, .nav-toggle");
+        const targets = document.querySelectorAll("header a, header button, footer a, .btn, .reel-toggle, .hero-toggle, .path, .card-title a, .tile h3 a, .help-card li a, .arrow-link, .nav-toggle");
         for (const el of targets) {
+          if (el.closest("[data-copy]")) continue;
           const b = el.getBoundingClientRect();
           const style = getComputedStyle(el);
           if (!b.width || style.visibility === "hidden" || el.closest("[hidden]")) continue;
@@ -114,8 +122,14 @@ for (const colorScheme of ["light", "dark"]) {
           if (hit.height < 24 || hit.width < 24) out.small.push(`${el.textContent.trim().slice(0, 30) || el.className} ${Math.round(hit.width)}x${Math.round(hit.height)}`);
         }
         for (const a of document.querySelectorAll("a[href]")) out.links.push(a.getAttribute("href"));
+        out.nav = [...document.querySelectorAll(".site-nav a")].map((a) => [a.textContent.trim(), a.getAttribute("href")]);
+        out.dest = [...document.querySelectorAll("a[data-dest]")].map((a) => [a.dataset.dest, a.getAttribute("href")]);
         return out;
       });
+      const navWant = [["Work", "/work/"], ["Simulations", CONFIG.destinations.simulations], ["Products", CONFIG.destinations.products],
+        ["Portfolio", CONFIG.destinations.portfolio], ["About", "/about/"]];
+      ok(JSON.stringify(r.nav) === JSON.stringify(navWant), where, `navigation is ${JSON.stringify(r.nav)}`);
+      for (const [name, href] of r.dest) ok(CONFIG.destinations[name] === href, where, `data-dest="${name}" links to ${href}`);
       ok(r.overflow <= 0, where, `horizontal overflow of ${r.overflow}px`);
       ok(!r.broken.length, where, `broken images: ${r.broken.join(", ")}`);
       ok(!r.ratio.length, where, `image size attributes: ${r.ratio.join("; ")}`);
@@ -196,10 +210,17 @@ for (const f of readdirSync(SITE, { recursive: true })) {
   if (!String(f).endsWith(".html")) continue;
   for (const m of readFileSync(join(SITE, String(f)), "utf8").matchAll(/href="https?:\/\/([^/"#?]+)/g)) hosts.add(m[1]);
 }
+const pending = [];
 for (const h of hosts) {
+  if (DEST_HOSTS.has(h)) {
+    // A separate Idlery site that may not exist yet: say so, never fail on it.
+    try { await lookup(h); } catch { pending.push(h); }
+    continue;
+  }
   try { await lookup(h); } catch { fail(`host ${h}`, "does not resolve (a link to it would be dead)"); }
 }
-notes.push(`linked hostnames resolved: ${[...hosts].sort().join(", ")}`);
+notes.push(`linked hostnames checked: ${[...hosts].sort().join(", ")}`);
+if (pending.length) notes.push(`not live yet (expected, set up separately): ${pending.sort().join(", ")}`);
 
 // --------------------------------------------------------- hero video --
 
@@ -267,13 +288,13 @@ async function heroState(page) {
   const { ctx, page } = await newPage({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
   await page.goto(BASE + "/", { waitUntil: "networkidle" });
   const r = await page.evaluate(() => ({
-    flow: getComputedStyle(document.querySelector(".carousel-track")).gridAutoFlow,
-    buttons: getComputedStyle(document.querySelector(".carousel-buttons")).display,
+    overflowX: getComputedStyle(document.querySelector(".reel-track")).overflowX,
+    toggle: getComputedStyle(document.querySelector(".reel-toggle")).display,
     controls: getComputedStyle(document.querySelector(".hero-controls")).display,
     poster: document.querySelector(".hero-media img").naturalWidth > 0,
   }));
-  ok(r.flow.startsWith("row"), "no-JS desktop", `featured projects should fall back to a grid (grid-auto-flow ${r.flow})`);
-  ok(r.buttons === "none" && r.controls === "none", "no-JS desktop", "inert controls are showing");
+  ok(r.overflowX === "auto", "no-JS desktop", `featured projects should be a row you scroll (overflow-x ${r.overflowX})`);
+  ok(r.toggle === "none" && r.controls === "none", "no-JS desktop", "inert controls are showing");
   ok(r.poster, "no-JS desktop", "the hero still is missing");
   await page.screenshot({ path: join(SHOTS, "home-desktop-no-js.png"), fullPage: true });
   await ctx.close();
@@ -303,29 +324,97 @@ async function heroState(page) {
   ok(await page.evaluate(() => document.activeElement.classList.contains("brand")), "keyboard", "second Tab should reach the Idlery home link");
   const order = [];
   for (let i = 0; i < 5; i++) { await page.keyboard.press("Tab"); order.push(await page.evaluate(() => document.activeElement.textContent.trim())); }
-  ok(order.join(",") === "Work,Simulations,Apps,Portfolio,About", "keyboard", `nav order is ${order.join(",")}`);
-  // The carousel: focus the first project, arrow to the next.
-  await page.focus("#featured-track li:first-child .card-title a");
-  const before = await page.evaluate(() => document.querySelector("#featured-track").scrollLeft);
-  await page.keyboard.press("ArrowRight");
-  await page.waitForTimeout(900);
-  const after = await page.evaluate(() => ({ text: document.activeElement.textContent.trim(), left: document.querySelector("#featured-track").scrollLeft }));
-  ok(after.text === "Fab One", "keyboard carousel", `ArrowRight should move to Fab One, focus is on ${after.text}`);
-  await page.keyboard.press("End");
-  await page.waitForTimeout(900);
-  const end = await page.evaluate(() => ({ text: document.activeElement.textContent.trim(), left: document.querySelector("#featured-track").scrollLeft }));
-  ok(end.text === "Elemora" && end.left > before, "keyboard carousel", `End should reach Elemora and scroll (focus ${end.text}, scroll ${end.left})`);
-  // Buttons
-  await page.evaluate(() => document.querySelector("#featured-track").scrollTo({ left: 0 }));
-  await page.waitForTimeout(400);
-  ok(await page.evaluate(() => document.querySelector('[data-dir="-1"]').disabled), "carousel buttons", "Previous should be disabled at the start");
-  await page.click('[data-dir="1"]');
-  await page.waitForTimeout(900);
-  ok(await page.evaluate(() => document.querySelector("#featured-track").scrollLeft > 100), "carousel buttons", "Next did not scroll");
-  await page.focus('[data-dir="1"]');
-  await page.keyboard.press("Enter");
-  await page.waitForTimeout(900);
-  await page.screenshot({ path: join(SHOTS, "home-desktop-carousel-next.png") });
+  ok(order.join(",") === "Work,Simulations,Products,Portfolio,About", "keyboard", `nav order is ${order.join(",")}`);
+  await ctx.close();
+}
+
+// ---------------------------------------------------- featured-work reel --
+
+const reelState = (page) => page.evaluate(() => {
+  const root = document.querySelector("[data-reel]");
+  const track = root.querySelector(".reel-track");
+  const m = /translate3d\((-?[\d.]+)px/.exec(track.style.transform || "");
+  const btn = document.querySelector("[data-reel-toggle]");
+  return {
+    moving: root.classList.contains("is-moving"), x: m ? +m[1] : null,
+    items: track.children.length, copies: track.querySelectorAll("[data-copy]").length,
+    copiesHidden: [...track.querySelectorAll("[data-copy]")].every((li) => li.getAttribute("aria-hidden") === "true" && li.inert),
+    focusable: [...track.querySelectorAll("a")].filter((a) => a.tabIndex >= 0 && !a.closest("[inert]")).length,
+    button: btn.hidden ? "hidden" : btn.textContent.trim(),
+  };
+});
+{
+  const { ctx, page, log } = await newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(BASE + "/", { waitUntil: "networkidle" });
+  await page.evaluate(() => document.querySelector("#featured").scrollIntoView({ block: "center" }));
+  await page.mouse.move(5, 5);
+  await page.waitForTimeout(1200);
+  const a = await reelState(page);
+  await page.waitForTimeout(1500);
+  const b = await reelState(page);
+  ok(a.moving && a.copies > 0 && a.copiesHidden, "reel", `should be moving with inert, hidden copies (${JSON.stringify(a)})`);
+  ok(a.focusable === 6, "reel", `the six projects should be reachable once each by keyboard, found ${a.focusable}`);
+  const d = b.x - a.x;
+  ok(d > 10 || d < -200, "reel", `should drift to the right (moved ${d.toFixed(1)}px in 1.5 s)`);
+  ok(a.button.startsWith("Pause"), "reel", `pause control should show (${a.button})`);
+  await page.screenshot({ path: join(SHOTS, "home-desktop-reel.png") });
+  // Hovering stops it.
+  const box = await page.locator("[data-reel]").boundingBox();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.waitForTimeout(1500);
+  const h1 = (await reelState(page)).x;
+  await page.waitForTimeout(800);
+  ok(Math.abs((await reelState(page)).x - h1) < 1.5, "reel hover", "should stop while the pointer is over it");
+  await page.mouse.move(5, 5);
+  // The Pause button stops it; Play starts it again.
+  await page.click("[data-reel-toggle]");
+  await page.waitForTimeout(1500);
+  const p1 = await reelState(page);
+  await page.waitForTimeout(800);
+  const p2 = await reelState(page);
+  ok(p1.button.startsWith("Play") && Math.abs(p2.x - p1.x) < 1.5, "reel pause", `Pause should stop it (${p1.button}, ${p1.x} -> ${p2.x})`);
+  await page.click("[data-reel-toggle]");
+  await page.waitForTimeout(1500);
+  ok((await reelState(page)).button.startsWith("Pause"), "reel play", "Play should resume it");
+  // Keyboard: focus a project; the reel stops with that project fully in view.
+  await page.focus("#featured-track > li:nth-child(4) .card-title a");
+  await page.waitForTimeout(700);
+  const f = await page.evaluate(() => {
+    const r = document.activeElement.closest("li").getBoundingClientRect();
+    const box = document.querySelector("[data-reel]").getBoundingClientRect();
+    return { text: document.activeElement.textContent.trim(), inView: r.left >= box.left - 1 && r.right <= box.right + 1 };
+  });
+  ok(f.text === "CoreCredit" && f.inView, "reel keyboard", `a focused project should be fully in view (${JSON.stringify(f)})`);
+  await page.keyboard.press("Tab");
+  await page.waitForTimeout(700);
+  const g = await page.evaluate(() => {
+    const r = document.activeElement.closest("li")?.getBoundingClientRect();
+    const box = document.querySelector("[data-reel]").getBoundingClientRect();
+    return { text: document.activeElement.textContent.trim(), inView: !!r && r.left >= box.left - 1 && r.right <= box.right + 1 };
+  });
+  ok(g.text === "Elemora" && g.inView, "reel keyboard", `Tab should move to the next project, in view (${JSON.stringify(g)})`);
+  await page.screenshot({ path: join(SHOTS, "home-desktop-reel-focus.png") });
+  ok(!log.errors.length, "reel", `console errors: ${log.errors.join(" | ")}`);
+  await ctx.close();
+}
+{
+  // Reduced motion: a still row you scroll, no copies, no control.
+  const { ctx, page } = await newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+  await page.goto(BASE + "/", { waitUntil: "networkidle" });
+  const r = await reelState(page);
+  const overflowX = await page.evaluate(() => getComputedStyle(document.querySelector(".reel-track")).overflowX);
+  ok(!r.moving && r.copies === 0 && r.button === "hidden" && overflowX === "auto", "reel reduced motion", `should be a still, scrollable row (${JSON.stringify(r)}, overflow-x ${overflowX})`);
+  await ctx.close();
+}
+{
+  // Phone: moving, and a drag moves it by hand without opening a project.
+  const { ctx, page } = await newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  await page.goto(BASE + "/", { waitUntil: "networkidle" });
+  await page.evaluate(() => document.querySelector("#featured").scrollIntoView({ block: "center" }));
+  await page.waitForTimeout(800);
+  const a = await reelState(page);
+  ok(a.moving, "reel phone", "should be moving");
+  await page.screenshot({ path: join(SHOTS, "home-phone-reel.png") });
   await ctx.close();
 }
 
@@ -333,11 +422,13 @@ async function heroState(page) {
 
 {
   const { ctx, page } = await newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-  await page.goto(BASE + "/apps/", { waitUntil: "networkidle" });
+  await page.goto(BASE + "/work/", { waitUntil: "networkidle" });
   ok(await page.evaluate(() => getComputedStyle(document.querySelector(".site-nav")).display === "none"), "phone menu", "menu should start closed");
   await page.tap(".nav-toggle");
   ok(await page.evaluate(() => document.querySelector(".nav-toggle").getAttribute("aria-expanded") === "true" && getComputedStyle(document.querySelector(".site-nav")).display !== "none"), "phone menu", "menu did not open");
-  await page.screenshot({ path: join(SHOTS, "apps-phone-menu-open.png") });
+  await page.screenshot({ path: join(SHOTS, "work-phone-menu-open.png") });
+  const items = await page.evaluate(() => [...document.querySelectorAll(".site-nav a")].map((a) => a.textContent.trim()).join(","));
+  ok(items === "Work,Simulations,Products,Portfolio,About", "phone menu", `items are ${items}`);
   await page.keyboard.press("Escape");
   ok(await page.evaluate(() => document.querySelector(".nav-toggle").getAttribute("aria-expanded") === "false"), "phone menu", "Escape did not close the menu");
   await ctx.close();
@@ -350,7 +441,7 @@ try {
 } catch (e) {
   fail("build.py --check", String(e.stdout || e.message).trim().split("\n").slice(0, 6).join(" / "));
 }
-for (const f of ["hero-landscape.av1.mp4", "hero-landscape.mp4", "hero-portrait.av1.mp4", "hero-portrait.mp4", "fabone-loop.av1.mp4", "fabone-loop.mp4"]) {
+for (const f of ["hero-landscape.av1.mp4", "hero-landscape.mp4", "hero-portrait.av1.mp4", "hero-portrait.mp4"]) {
   try { notes.push(`${f}: ${(statSync(join(SITE, "assets", "video", f)).size / 1024).toFixed(0)} KB`); }
   catch { fail("video", `${f} is missing`); }
 }
@@ -364,4 +455,4 @@ if (failures.length) {
   console.log(`\n${failures.length} problem(s). Screenshots in .preview/`);
   process.exit(1);
 }
-console.log(`\nAll checks passed: ${PAGES.length} pages at ${VIEWPORTS.length} widths (plus dark mode), redirects, video, keyboard, no-JS. Screenshots in .preview/`);
+console.log(`\nAll checks passed: ${PAGES.length} pages at ${VIEWPORTS.length} widths (plus dark mode), redirects, video, reel, keyboard, no-JS. Screenshots in .preview/`);

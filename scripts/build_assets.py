@@ -16,6 +16,12 @@ is redrawn. Rules carried over from the previous idlery.com build:
 
 The hero video and its posters are made by scripts/build_montage.py, and the
 social cards by scripts/make_og.mjs.
+
+Featured-work cards are 4:3 and emitted at 440 and 880 px. A card is either a
+chosen crop of a real frame, or, for a product that exists only as a phone
+screen, one real screen set on a ground in the product's own accent colour and
+entering from the bottom edge (see product_card). Nothing inside a screen is
+drawn.
 """
 
 from __future__ import annotations
@@ -25,7 +31,7 @@ import shutil
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "src-assets"
@@ -53,6 +59,32 @@ def emit(im: Image.Image, stem: str, widths: tuple[int, ...], *, jpeg: bool = Tr
         path = OUT / f"{stem}-{w}.jpg"
         (im.resize((w, h), Image.LANCZOS) if w != im.width else im).save(path, "JPEG", quality=86, optimize=True, progressive=True)
         log(f"{path.name:36s} {w}x{h}  {path.stat().st_size // 1024} KB")
+
+
+CARD = (440, 880)          # featured-work card widths (4:3)
+
+
+def product_card(screen: Image.Image, ground: tuple, ground2: tuple, *, width: int = 880, scale: float, top: int,
+                 radius: int = 34) -> Image.Image:
+    """One real phone screen on a vertical gradient of the product's own colours,
+    centred, rising from the bottom edge of a 4:3 frame, with a soft shadow.
+    `screen` is already cropped below the status bar; it is only scaled down."""
+    W, H = width, width * 3 // 4
+    top_c, bot_c = np.array(ground, float), np.array(ground2, float)
+    ramp = np.linspace(0, 1, H)[:, None, None]
+    bg = Image.fromarray((top_c * (1 - ramp) + bot_c * ramp).repeat(W, axis=1).astype(np.uint8), "RGB")
+    sw = round(screen.width * scale)
+    sh = round(screen.height * scale)
+    shot = screen.resize((sw, sh), Image.LANCZOS)
+    x = (W - sw) // 2
+    mask = Image.new("L", (sw, sh), 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, sw - 1, sh + radius), radius=radius, fill=255)
+    shadow = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(shadow).rounded_rectangle((x - 6, top + 18, x + sw + 6, H + 60), radius=radius, fill=120)
+    shadow = shadow.filter(ImageFilter.GaussianBlur(28))
+    bg = Image.composite(Image.new("RGB", (W, H), (6, 14, 40)), bg, shadow)
+    bg.paste(shot, (x, top), mask)
+    return bg
 
 
 def crop_ratio(im: Image.Image, ratio: float, *, cx: float = 0.5, cy: float = 0.5) -> Image.Image:
@@ -94,8 +126,7 @@ def brand() -> None:
     log("Apple's badge and Karnwold's mark copied byte for byte")
 
     cc = Image.open(SRC / "brand" / "corecredit-appicon-1024.png").convert("RGB")
-    for size in (128, 256):
-        cc.resize((size, size), Image.LANCZOS).save(OUT / f"corecredit-icon-{size}.png", optimize=True)
+    cc.resize((256, 256), Image.LANCZOS).save(OUT / "corecredit-icon-256.png", optimize=True)
 
     # Elemora's mark has generous margin; crop a square around its own artwork
     # (the same rule as the previous site) so it sits level with CoreCredit's.
@@ -107,8 +138,7 @@ def brand() -> None:
     half = round(max(xs.max() - xs.min(), ys.max() - ys.min()) / 2 / 0.62)
     half = int(min(half, cx, cy, el.width - cx, el.height - cy))
     el = el.crop((cx - half, cy - half, cx + half, cy + half))
-    for size in (128, 256):
-        el.resize((size, size), Image.LANCZOS).save(OUT / f"elemora-icon-{size}.png", optimize=True)
+    el.resize((256, 256), Image.LANCZOS).save(OUT / "elemora-icon-256.png", optimize=True)
     log("CoreCredit and Elemora app icons")
 
 
@@ -130,10 +160,16 @@ def corecredit() -> None:
                        ("phone-history.png", "cc-history")):
         emit(cc_phone(name), stem, (440, 880))
     dash = Image.open(SRC / "corecredit" / "phone-dashboard.png").convert("RGB")
-    # Money at risk, Overdue and the Add core button. x 16..930 leaves an equal
+    # The card: the dashboard screen, below the status bar, rising from the
+    # bottom of a ground in CoreCredit's accent blue (Palette.accent #0053FD),
+    # so the money-at-risk figures and the Add core button lead.
+    # x 15..931 keeps the cards' own margins equal and drops the iOS scroll
+    # indicator (columns 932..938) that the capture caught mid-fade.
+    emit(product_card(cc_phone("phone-dashboard.png").crop((15, 0, 931, 1923)), (0, 83, 253), (6, 36, 128),
+                      scale=0.64, top=78), "card-corecredit", CARD)
+    # The Work tile: Money at risk and Overdue. x 16..930 leaves an equal
     # 24px margin either side of the cards and drops the iOS scroll indicator
     # (columns 932..938) that the capture caught mid-fade.
-    emit(dash.crop((16, 348, 930, 1034)), "card-corecredit", (640, 914))
     emit(dash.crop((16, 352, 930, 923)), "wide-corecredit", (800, 914))
     ipad = Image.open(SRC / "corecredit" / "ipad-dashboard.png").convert("RGB")
     # Below the iPad status bar (48px at this scale), the full dashboard.
@@ -146,15 +182,19 @@ EL_STATUS = 141   # the iPhone's top safe-area inset at 3x
 
 
 def elemora() -> None:
-    for name, stem in (("01-table.png", "el-table"), ("02-element-oxygen.png", "el-oxygen"),
+    for name, stem in (("02-element-oxygen.png", "el-oxygen"),
                        ("04-study.png", "el-study"),
                        ("05-identify.png", "el-identify"), ("06-build.png", "el-build"),
                        ("07-progress.png", "el-progress")):
         im = Image.open(SRC / "elemora" / name).convert("RGB")
         emit(im.crop((0, EL_STATUS, im.width, im.height)), stem, (440, 880))
     table = Image.open(SRC / "elemora" / "01-table.png").convert("RGB")
-    emit(table.crop((30, 870, 1140, 1702)), "card-elemora", (640, 1110))      # the whole table, H to Lr
     emit(table.crop((0, 915, 1170, 1646)), "wide-elemora", (800, 1170))       # the table alone
+    # The card: Build, with caffeine assembled: its formula, molar mass and
+    # skeletal structure, on the screen's own pale blue ground.
+    build = Image.open(SRC / "elemora" / "06-build.png").convert("RGB")
+    screen = build.crop((0, 280, build.width, build.height))                   # below the Build title bar
+    emit(product_card(screen, (232, 240, 249), (205, 222, 242), scale=0.5, top=34), "card-elemora", CARD)
 
 
 # -------------------------------------------------------------- Karnwold --
@@ -170,11 +210,11 @@ def karnwold() -> None:
         # decks, stopping short of the side panels and the resource bar.
         g = Image.open(game).convert("RGB")
         emit(g.crop((0, 58, 1920, 1080)), "kw-game", (720, 1200))
-        emit(g.crop((312, 58, 1584, 1012)), "card-karnwold", (640, 1088))
+        emit(g.crop((312, 58, 1584, 1012)), "card-karnwold", CARD)
         emit(g.crop((0, 58, 1920, 1080)), "wide-karnwold", (800, 1320))
     else:
         emit(online, "kw-game", (720, 1280))
-        emit(online.crop((0, 40, 960, 760)), "card-karnwold", (640, 960))
+        emit(online.crop((0, 40, 960, 760)), "card-karnwold", CARD)
         emit(crop_ratio(online, 16 / 10), "wide-karnwold", (800, 1280))
     emit(Image.open(src / "02-prototype-table.png"), "kw-prototype", (600, 1200))
     pieces = Image.open(src / "03-pieces.jpg").convert("RGB")
@@ -188,22 +228,49 @@ def fabone() -> None:
     """Frames rendered by Fab One itself (its WebGL buffer on its virtual clock,
     no interface in frame): see montage/README.md for the lesson URLs."""
     src = SRC / "fabone"
-    for stem in ("bay", "scanner", "develop"):
-        emit(Image.open(src / f"{stem}.png"), f"fab-{stem}", (800, 1600))
     # The card: the scanner's lens column with the light path on, 4:3.
-    emit(crop_ratio(Image.open(src / "scanner.png").convert("RGB"), 4 / 3, cx=0.49), "card-fabone", (640, 1088))
+    emit(crop_ratio(Image.open(src / "scanner.png").convert("RGB"), 4 / 3, cx=0.49), "card-fabone", CARD)
     # The Work tile: a resist-coated wafer in the developer bowl, 16:10.
     emit(crop_ratio(Image.open(src / "wafer.png").convert("RGB"), 16 / 10, cx=0.42), "wide-fabone", (800, 1320))
 
 
-# ------------------------------------------------------------- portfolio --
+# ------------------------------------------------------ Rocket Engineering --
 
-def portfolio() -> None:
-    # The ENP 359 strain-gage lab simulator with its own "Working example"
-    # loaded, captured at 1600x1000 from a local build of the app. The crop keeps
-    # the wired breadboard, the multimeter and the beam, and drops the side panels.
-    cap = Image.open(SRC / "portfolio" / "straingage-capture.png").convert("RGB")
-    emit(cap.crop((186, 40, 1216, 972)), "pf-straingage", (560, 1030))
+def rocket() -> None:
+    """Frames rendered by the Rocket Engineering simulator itself (its WebGL
+    buffer on its virtual clock, no interface in frame): see montage/capture/rocket/."""
+    src = SRC / "rocket"
+    # The card: the payload fairing separating over the curve of the Earth.
+    fairing = Image.open(src / "fairing.png").convert("RGB")
+    emit(crop_ratio(fairing, 4 / 3, cx=0.5), "card-rocket", CARD)
+    # The Work tile: stage separation, the booster falling away.
+    sep = Image.open(src / "stage-separation.png").convert("RGB")
+    emit(crop_ratio(sep, 16 / 10, cx=0.5), "wide-rocket", (800, 1320))
+
+
+# -------------------------------------------------------------- Holograph --
+
+def holograph() -> None:
+    """iPad simulator screenshots from Holograph's own UI test run
+    (BKimble1/Holograph, branch ci-screenshots). Crops keep the status bar and
+    the settings button out of frame."""
+    src = SRC / "holograph"
+    portrait = Image.open(src / "03-launcher-portrait.png").convert("RGB")   # 2064x2752
+    emit(portrait.crop((0, 520, 2064, 2068)), "card-holograph", CARD)       # Scanpoint and its neighbours
+    land = Image.open(src / "01-launcher-landscape.png").convert("RGB")     # 2752x2064, rotated upright
+    emit(land.crop((0, 222, 2752, 1942)), "wide-holograph", (800, 1320))
+
+
+# ------------------------------------------------------------------ marks --
+
+def marks() -> None:
+    """App icons of projects not yet captured in use, from each project's own
+    asset catalogue: OffRent Ledger, WallField (BKimble1/Magshift), Turbid."""
+    src = SRC / "marks"
+    for name, stem in (("offrent-appicon-1024.png", "offrent-icon"), ("wallfield-appicon-1024.png", "wallfield-icon"),
+                       ("turbid-appicon.png", "turbid-icon")):
+        Image.open(src / name).convert("RGB").resize((256, 256), Image.LANCZOS).save(OUT / f"{stem}-256.png", optimize=True)
+    log("OffRent Ledger, WallField and Turbid icons")
 
 
 # ----------------------------------------------------------------- legacy --
@@ -220,7 +287,7 @@ def legacy() -> None:
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    for step in (brand, corecredit, elemora, karnwold, fabone, portfolio, legacy):
+    for step in (brand, corecredit, elemora, karnwold, fabone, rocket, holograph, marks, legacy):
         print(step.__name__)
         step()
     (ROOT / "src-assets" / "sizes.json").write_text(json.dumps(SIZES, indent=1, sort_keys=True) + "\n")

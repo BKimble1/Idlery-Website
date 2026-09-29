@@ -1,5 +1,10 @@
 # Audit of idlery.com before the redesign
 
+> This audit records the first pass of the rebuilt site (September 2026). The
+> site has since been repositioned as a technology studio: Simulations,
+> Products and Portfolio are separate sites now, and idlery.com has its own
+> privacy policy and terms. `docs/DESIGN.md` describes the current structure.
+
 Written 2026-09-29, at the start of this repository.
 
 ## What could and could not be reached

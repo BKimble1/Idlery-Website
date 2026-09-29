@@ -1,8 +1,9 @@
 # idlery.com
 
-The source of truth for **idlery.com**, the home of Idlery Services LLC's work:
-Karnwold, Fab One and Idlery Simulations, the iOS apps CoreCredit and Elemora,
-and Blake Kimble's engineering portfolio.
+The source of truth for **idlery.com**, the home of Idlery Services LLC, an
+independent technology studio. The site shows the range of the work (Rocket
+Engineering, Fab One, Karnwold, CoreCredit, Elemora, OffRent Ledger and a bench
+of experiments) and points to the studio's other sites.
 
 It is a plain static site: hand-written HTML, one stylesheet, one small script,
 self-hosted fonts, no framework and no build step that Netlify has to run. What
@@ -10,26 +11,40 @@ Netlify serves is exactly the `site/` folder.
 
 ```
 site/                    the deployable site; this folder is the publish root
-  index.html             home: hero montage, featured work, paths, about
-  work/ simulations/ apps/ portfolio/ about/        the five sections
+  index.html             home: hero reel, featured work, Explore Idlery, about
+  work/ about/           the two sections that live here
   karnwold/ corecredit/ elemora/                    project pages (old URLs, kept)
-  support/ legal/        help, contact, privacy and terms
+  support/ privacy/ terms/ legal/                   help, and this site's own policies
   404.html  _headers  _redirects  robots.txt  sitemap.xml  site.webmanifest  favicon.ico
   assets/css/site.css    the whole stylesheet
-  assets/js/site.js      the whole script (menu, hero video, carousel)
+  assets/js/site.js      the whole script (menu, hero video, featured-work reel)
   assets/fonts/          Manrope and IBM Plex Mono, with their OFL licences
   assets/img/            generated images (see "Images")
-  assets/video/          the hero montage and its posters, the Fab One clip
+  assets/video/          the hero reel and its posters
 
 partials/                header, footer and <head> shared by every page
-site.config.json         where Simulations and Portfolio point; App Store links
+site.config.json         where Simulations, Products and Portfolio point; App Store links
 src-assets/              full-size originals for every image; never served
-src-media/montage/       the footage and captures the montage is cut from
-montage/shots.json       the montage edit
+src-media/montage/       the footage and captures the reel is cut from
+montage/                 the reel's edit (shots.json), compositor, capture scripts
 scripts/                 build.py, build_assets.py, build_montage.py, serve.mjs,
-                         check_site.mjs, make_zip.py
+                         check_site.mjs, make_og.mjs, make_zip.py
 docs/                    AUDIT.md, MEDIA.md, DESIGN.md
 ```
+
+## The Idlery sites
+
+| Address | What it is | Where it is built |
+|---|---|---|
+| idlery.com | The main brand: Work, About, Support, Privacy, Terms | here |
+| products.idlery.com | Products | a separate site, not in this repository |
+| simulations.idlery.com | Simulations | a separate site, not in this repository |
+| portfolio.idlery.com | Blake Kimble's engineering portfolio | a separate site, not in this repository |
+
+The navigation links straight to the three separate sites. Until each is set
+up, its link simply goes nowhere; that is expected, and nothing here tries to
+stand in for them. The old local pages `/simulations/`, `/apps/` and
+`/portfolio/` 301 to them (see "Change something").
 
 ## Preview it locally
 
@@ -39,7 +54,7 @@ the preview itself.
 ```sh
 git clone https://github.com/BKimble1/Idlery-Website.git
 cd Idlery-Website
-node scripts/serve.mjs          # then open http://localhost:8080
+node scripts/serve.mjs          # or: npm run serve; then open http://localhost:8080
 ```
 
 On Windows, run the same commands in PowerShell or Command Prompt. The preview
@@ -55,22 +70,23 @@ Use `node scripts/serve.mjs 8090` for another port; stop it with Ctrl+C.
 `partials/`, then run:
 
 ```sh
-python3 scripts/build.py          # rewrites the marked regions of every page
+python3 scripts/build.py          # or: npm run build; rewrites the marked regions of every page
 python3 scripts/build.py --check  # changes nothing; fails if a page has drifted
 ```
 
 `build.py` also lints every page: one `<h1>`, a title, description, canonical
-and social tags, `alt` and dimensions on every image, and nothing the
-Content-Security-Policy would block (inline `style=` attributes, inline
+and social tags, `alt` and dimensions on every image, no em dashes, and nothing
+the Content-Security-Policy would block (inline `style=` attributes, inline
 scripts, `onclick`).
 
-**Where "Simulations" and "Portfolio" point** is set in `site.config.json`.
-Today they are the pages `/simulations/` and `/portfolio/`. When
-`simulations.idlery.com` (or `portfolio.idlery.com`) is live, change the value
-to its full URL and run `python3 scripts/build.py`. The navigation and footer
-then link straight there, and a forced 301 from the old path is added to
-`_redirects`, so every existing link follows. The App Store links live in the
-same file.
+**Where "Simulations", "Products" and "Portfolio" point** is set in
+`site.config.json`, under `destinations`, and nowhere else. `build.py` writes
+those addresses into the navigation and footer, and into every link in page
+content marked `data-dest="simulations"` (or `products`, `portfolio`); a page
+that types one of those URLs without `data-dest` fails the lint. Under
+`retired_paths`, each old local section gets a forced 301 to its site, with and
+without the trailing slash, in the generated block of `site/_redirects`. The
+App Store links live in the same file.
 
 ## Images
 
@@ -79,45 +95,58 @@ Every file in `site/assets/img/` is generated from `src-assets/`:
 ```sh
 pip install Pillow numpy
 python3 scripts/build_assets.py
+node scripts/make_og.mjs          # the 1200x630 social card, from the generated cards
 ```
 
-Screens are cropped, never redrawn: iPhone captures are cut below the iOS
-status bar instead of having one painted in, nothing is upscaled, and each
-image ships as WebP plus a JPEG fallback. `src-assets/sizes.json` lists the
-final dimensions to use in `width`/`height` attributes. A few files from the
-previous site are kept byte for byte under their old names (`src-assets/legacy/`)
-because other places may link to them.
+Screens are cropped, never redrawn: iPhone captures are cut below the iOS status
+bar instead of having one painted in, nothing is upscaled, and each image ships
+as WebP plus a JPEG fallback. Featured-work cards are 4:3: either a chosen crop
+of a real frame, or one real phone screen rising from the bottom of a ground in
+the product's own colours (CoreCredit, Elemora). `src-assets/sizes.json` lists
+the final dimensions to use in `width`/`height` attributes. A few files from
+the previous site are kept byte for byte under their old names
+(`src-assets/legacy/`) because other places may link to them.
 
-## The hero montage
+## The hero reel
 
 ```sh
 pip install Pillow numpy imageio-ffmpeg
-python3 scripts/build_montage.py            # both cuts, about 16 s each
+python3 montage/compose.py                  # the Elemora wall, if its captures changed
+python3 scripts/build_montage.py            # both cuts
 ```
 
-The edit is `montage/shots.json`; `montage/README.md` explains every field and
-where each piece of footage came from. The script writes the web encodes
-(H.264 MP4 and VP9 WebM) and posters to `site/assets/video/`, and updates the
-"Now showing" chapter times in `site/index.html`. The page plays the landscape
-cut on wide screens and the portrait cut on phones, never under
-`prefers-reduced-motion` or Save-Data, pauses it off screen, and has a visible
-Pause button. With scripting off, the poster is shown.
+A silent studio reel of real project footage: Rocket Engineering, Fab One,
+Karnwold, CoreCredit, Elemora and Holograph, about 27 s in landscape and 25 s
+in a separately composed portrait cut, looping from footage straight back into
+footage with no title card. The edit is `montage/shots.json`;
+`montage/README.md` explains every field and where each piece of footage came
+from, and `montage/capture/` holds the scripts that rendered the simulator
+footage. The script writes the web encodes (AV1 and H.264 MP4) and posters to
+`site/assets/video/`, and the "Now showing" chapter times into
+`site/index.html`. The page plays the landscape cut on wide screens and the
+portrait cut on phones, never under `prefers-reduced-motion` or Save-Data,
+pauses it off screen, and has a visible Pause button. With scripting off, the
+poster is shown.
 
 ## Check it
 
 ```sh
-npm install                   # Playwright, once
-node scripts/check_site.mjs   # or: npm run check
+npm ci                        # Playwright, once
+npm run check                 # or: node scripts/check_site.mjs
 ```
 
-It loads every page at five widths (360 to 1920 px) in light mode and at two in
-dark mode, under the real `_headers`, and fails on console errors, CSP
-violations, failed or third-party requests, horizontal overflow, broken images
-or wrong image dimensions, tap targets under 24 px, dead internal links, any
-redirect rule that does not do what it says, and linked hostnames that do not
-resolve. It also checks the hero video (autoplay, pause, portrait cut,
-reduced motion), the no-script layout, keyboard order and the carousel keys,
-and the phone menu. Screenshots land in `.preview/`.
+It loads every page at five sizes (360 px phone to 1920 px desktop, including
+390x844, 834x1194, 1440x900 and 1920x1080) in light mode and at two in dark
+mode, under the real `_headers`, and fails on console errors, CSP violations,
+failed or third-party requests, horizontal overflow, broken images or wrong
+image dimensions, tap targets under 24 px, dead internal links, navigation that
+does not match `site.config.json`, any redirect rule that does not do what it
+says, and linked hostnames that do not resolve. The three separate sites are
+exempt from that last check and reported as "not live yet" instead. It also
+checks the hero video (autoplay, pause, portrait cut, reduced motion), the
+featured-work reel (drift, hover, Pause, keyboard focus, reduced motion), the
+no-script layout, keyboard order and the phone menu. Screenshots land in
+`.preview/`.
 
 ## Package and deploy
 
@@ -126,8 +155,8 @@ python3 scripts/make_zip.py   # writes dist/idlery-netlify.zip
 ```
 
 The contents of `site/` go in at the ZIP root (`index.html`, `_headers` and
-`_redirects` at the top level, no wrapper folder). To publish: Netlify → the
-idlery.com site → **Deploys** → drag the ZIP onto **Deploy manually**. The
+`_redirects` at the top level, no wrapper folder). To publish: Netlify, the
+idlery.com site, **Deploys**, then drag the ZIP onto **Deploy manually**. The
 domain and certificate belong to the Netlify site, so every earlier deploy stays
 available to roll back to. `netlify.toml` only matters if this repository is
 ever connected to Netlify for automatic deploys.
@@ -140,21 +169,28 @@ ever connected to Netlify for automatic deploys.
 * `karnwold.idlery.com` should be an alias of **this** Netlify site, so it only
   ever redirects to karnwold.com and never becomes a second origin for the game
   (no new OAuth callback, Stripe or WebSocket origin). It needs a DNS record at
-  IONOS (`CNAME karnwold → idleryservices.netlify.app`) and the alias added in
-  Netlify; until then its rule is inert.
-* `simulations.idlery.com` and `portfolio.idlery.com` do not exist yet. See
-  "Change something" for switching the navigation over when they do.
+  IONOS (`CNAME karnwold` to `idleryservices.netlify.app`) and the alias added
+  in Netlify; until then its rule is inert.
+* `products.idlery.com`, `simulations.idlery.com` and `portfolio.idlery.com` are
+  separate sites with their own hosting, set up outside this repository.
 
 ## Content rules
 
-* Every image and frame is real: captures of the apps, renders from Fab One,
-  footage and photographs of Karnwold. No stock imagery, no device mockups, no
-  invented interfaces. `docs/MEDIA.md` records where each one came from.
+* Every image and frame is real: renders by the simulators' own renderers,
+  captures of the products, footage and photographs of Karnwold. No stock
+  imagery, no device mockups, no invented interfaces. `docs/MEDIA.md` records
+  where each one came from.
 * Claims stay inside what each project's own repository, site or store listing
-  supports. No ratings, user counts, prices or release dates.
+  supports, and each project says where it stands (released, in development,
+  experimental). No ratings, user counts, prices or release dates.
+* Experimental projects state their limits: WallField does not see through
+  walls or confirm wiring; Turbid does not tell you whether water is safe to
+  drink.
 * Each product's own site is canonical for its support, privacy and terms;
-  idlery.com links to them and does not restate them.
+  idlery.com links to them and does not restate them. idlery.com's own privacy
+  policy and terms cover only this website.
 * CoreCredit screens show sample records; Elemora screens were captured before
-  release. The pages say so.
-* Apple's badge is Apple's artwork, unmodified, at 48 px tall, with Apple's
-  trademark line in the footer.
+  release.
+* Apple's badge is Apple's artwork, unmodified, at 48 px tall, and Apple's
+  trademark line appears on the pages that show it.
+* No em dashes, anywhere.

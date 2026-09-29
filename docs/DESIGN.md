@@ -2,27 +2,53 @@
 
 ## Structure
 
-| Nav | Page | What it is for |
+idlery.com is the umbrella brand of an independent technology studio. It shows
+the range of the work and routes people to the right place; it is not a
+catalogue of apps.
+
+| Nav | Goes to | What it is for |
 |---|---|---|
-| Work | `/work/` | Every Idlery project, grouped by kind (games, simulations, iOS apps) |
-| Simulations | `/simulations/` | Idlery Simulations, starting with Fab One. A preview page until `simulations.idlery.com` exists |
-| Apps | `/apps/` | CoreCredit and Elemora, with the App Store badge and each app's help links |
-| Portfolio | `/portfolio/` | Blake Kimble's own engineering and design projects, kept apart from Idlery's products |
-| About | `/about/` | What Idlery is, and how to reach it |
+| Work | `/work/` | Everything Idlery has built or is building, grouped as Engineering and simulation, Products, Games and Experiments, each with an honest status |
+| Simulations | `https://simulations.idlery.com/` | A separate site (not built here) |
+| Products | `https://products.idlery.com/` | A separate site (not built here). Replaces the old "Apps" item |
+| Portfolio | `https://portfolio.idlery.com/` | A separate site (not built here): Blake Kimble's own engineering and design work |
+| About | `/about/` | What Idlery is, how it works, and how to reach it |
 
-The five labels are the ones in the brief. They were kept because each names a
-distinct destination and the set fits one row on a laptop and a short menu on a
-phone. "Work" is the overview; "Simulations" and "Apps" are the two families
-that will grow; "Portfolio" is deliberately a different kind of page (personal,
-engineering-led, with a drafting-grid header) so it does not read as more
-Idlery product work. Karnwold, CoreCredit and Elemora are projects inside
-Work, not nav items, and their old URLs (`/karnwold/`, `/corecredit/`,
-`/elemora/`) are kept as short project pages that lead with the real action:
-Play, or Download on the App Store.
+The three outside destinations live in `site.config.json` and nowhere else:
+`scripts/build.py` writes them into the header and footer, rewrites every
+content link marked `data-dest="..."`, and fails the lint if a page types one
+of those URLs by hand. The old local pages `/simulations/`, `/apps/` and
+`/portfolio/` were removed; forced 301s send them (with and without the
+trailing slash, and any deeper path) to their sites. Those sites may not be
+live yet; the links point at their final addresses on purpose.
 
-Support, contact, privacy and terms are in the footer of every page, on the
-About page, and at `/support/` and `/legal/`. The old `/privacy`, `/terms`,
-`/contact` and friends redirect there.
+Karnwold, CoreCredit and Elemora keep their short project pages at
+`/karnwold/`, `/corecredit/` and `/elemora/`, because other places link to them.
+
+The home page: the hero reel, **Featured work** (six projects chosen to show
+range, in a slow reel that drifts to the right), **Explore Idlery** (the three
+sister sites, each labelled with its own hostname so it reads as navigation
+within one studio rather than a definition of it) and a short About band.
+
+Support is about Idlery itself: one address, what helps us help, and a
+compact list of where each released product keeps its own help and policies.
+idlery.com has its own [privacy policy](../site/privacy/index.html) and
+[terms of use](../site/terms/index.html); `/legal/` indexes them and the
+product policies. The footer carries only Explore and Help; project lists and
+Apple's trademark line are gone from the global footer (the line stays on the
+two pages that show Apple's badge).
+
+### The featured-work reel
+
+With scripting and motion allowed, the list of six cards drifts slowly to the
+right, forever: the list is copied once or twice (copies are `inert` and
+`aria-hidden`, so each project is announced and focusable once) and moved with
+a transform. It eases to a stop under the pointer, when a project takes
+keyboard focus (which also brings that card fully into view), and with its
+Pause button (WCAG 2.2.2). It stops off screen, can be dragged by hand, speeds
+up a little while the page scrolls, and never runs under
+`prefers-reduced-motion`; then, and without scripting, it is a plain row you
+scroll.
 
 ## Type
 
@@ -40,7 +66,8 @@ About page, and at `/support/` and `/legal/`. The old `/privacy`, `/terms`,
 Warm paper and a teal-black ink, with the wordmark's teal as the only brand
 colour. The projects bring their own colour through their real imagery; each
 also has a small swatch sampled from its own artwork (Karnwold's ember, Fab
-One's violet, CoreCredit's blue, Elemora's teal), used only as a marker.
+One's violet, CoreCredit's blue, Elemora's teal, Rocket Engineering's KIMBLE
+violet, Holograph's cyan), used only as a marker.
 
 | Pair | Ratio |
 |---|---|

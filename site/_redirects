@@ -5,11 +5,16 @@
 # real page unless its status ends in "!". Anything unmatched gets 404.html.
 
 # ---------------------------------------------------------------------------
-# Destinations and App Store links. Edit site.config.json, then run
-# python3 scripts/build.py, which rewrites this block.
+# Retired sections and App Store links. Edit site.config.json, then run
+# python3 scripts/build.py, which rewrites this block. /simulations/, /apps/
+# and /portfolio/ used to be pages here; each now 301s to its own site.
 # @generated from site.config.json by scripts/build.py -- do not edit by hand
-# /simulations/ is served by this site (/simulations/).
-# /portfolio/ is served by this site (/portfolio/).
+/simulations    https://simulations.idlery.com/    301!
+/simulations/*    https://simulations.idlery.com/:splat    301!
+/apps    https://products.idlery.com/    301!
+/apps/*    https://products.idlery.com/:splat    301!
+/portfolio    https://portfolio.idlery.com/    301!
+/portfolio/*    https://portfolio.idlery.com/:splat    301!
 /corecredit/download    https://apps.apple.com/app/corecredit-core-return-ledger/id6802336957    302
 /elemora/download    https://apps.apple.com/us/app/elemora-periodic-table/id6812577166    302
 # /@generated
@@ -33,18 +38,18 @@ http://karnwold.idlery.com/*        https://karnwold.com/:splat   301!
 /home                /                     301
 /approach            /about/               301
 /contact             /support/             301
-/products            /work/                301
 /games               /work/                301
-/privacy             /legal/#privacy       301
-/privacy-policy      /legal/#privacy       301
-/terms               /legal/#terms         301
-/terms-of-use        /legal/#terms         301
+/privacy-policy      /privacy/             301
+/terms-of-use        /terms/               301
 /karnwold.html       /karnwold/            301
 /elemora.html        /elemora/             301
 /corecredit.html     /corecredit/          301
-/simulation          /simulations/         301
-/fab-one             /simulations/         301
-/fabone              /simulations/         301
+# Products, Simulations and Portfolio are their own sites now (see the
+# generated block above); these older aliases go straight there.
+/products            https://products.idlery.com/       301
+/simulation          https://simulations.idlery.com/    301
+/fab-one             https://simulations.idlery.com/    301
+/fabone              https://simulations.idlery.com/    301
 
 # /app, /download and /app-store were printed on CoreCredit paperwork before
 # there was a second product, so they keep pointing at CoreCredit.

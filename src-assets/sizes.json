@@ -1,19 +1,27 @@
 {
  "card-corecredit": [
-  914,
-  686
+  880,
+  660
  ],
  "card-elemora": [
-  1110,
-  832
+  880,
+  660
  ],
  "card-fabone": [
-  1088,
-  816
+  880,
+  660
+ ],
+ "card-holograph": [
+  880,
+  660
  ],
  "card-karnwold": [
-  1088,
-  816
+  880,
+  660
+ ],
+ "card-rocket": [
+  880,
+  660
  ],
  "cc-cores": [
   880,
@@ -59,22 +67,6 @@
   880,
   1798
  ],
- "el-table": [
-  880,
-  1798
- ],
- "fab-bay": [
-  1600,
-  900
- ],
- "fab-develop": [
-  1600,
-  900
- ],
- "fab-scanner": [
-  1600,
-  900
- ],
  "kw-concept": [
   1200,
   675
@@ -91,10 +83,6 @@
   1200,
   675
  ],
- "pf-straingage": [
-  1030,
-  932
- ],
  "wide-corecredit": [
   914,
   571
@@ -107,8 +95,16 @@
   1320,
   825
  ],
+ "wide-holograph": [
+  1320,
+  825
+ ],
  "wide-karnwold": [
   1320,
   703
+ ],
+ "wide-rocket": [
+  1320,
+  825
  ]
 }

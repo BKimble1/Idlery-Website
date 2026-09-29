@@ -4,14 +4,15 @@
     pip install Pillow numpy imageio-ffmpeg     # imageio-ffmpeg supplies ffmpeg
     python3 scripts/build_montage.py            # every cut in montage/shots.json
     python3 scripts/build_montage.py landscape  # one cut
+    python3 montage/compose.py                  # first, if its source captures changed
 
 The edit lives in montage/shots.json: one entry per shot, in order, with its
 source file, the moment to start from, how long it holds, the crop window it
 pans from and to (fractions of the source frame: [x, y, width, height]), an
 optional grade, and the crossfade into the next shot. Nothing is generated or
 redrawn: every frame is a frame of a real recording or render, or a crop of a
-real capture, moved and faded. The closing card is the Idlery wordmark on the
-site's own dark ground.
+real capture, moved and faded. There is no title or logo card: the reel runs
+from project footage straight back into project footage.
 
 The loop is seamless: the first frames of the first shot are held back and the
 last shot crossfades into them, so the file wraps without a cut, and the poster

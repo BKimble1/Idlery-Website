@@ -1,7 +1,7 @@
 # How the footage was captured
 
-These scripts recorded the Fab One and Karnwold footage in
-`src-media/montage/`. They drive each product's own production build in
+These scripts recorded the Rocket Engineering, Fab One and Karnwold footage
+in `src-media/montage/`. They drive each product's own production build in
 Playwright's Chromium and step its clock one frame at a time, so motion is
 smooth and exactly timed even on a machine with only software rendering.
 Nothing in either product was modified; these scripts only watch.
@@ -69,3 +69,39 @@ metric-compatible open fonts Gelasio and Selawik (put the font files in
 
 Karnwold issue noticed while capturing: the header reads "You's turn" when the
 player is named "You".
+
+## Rocket Engineering (`rocket/`)
+
+Repository: `BKimble1/rocket-simulation`, branch
+`claude/kimble-rocket-engineering` (commit `6bdec75` was used).
+
+```sh
+cd ../rocket-simulation && npm ci && npx vite build   # the branch's tsc step trips on one unused constant; vite alone builds the same bundle
+npx vite preview --port 4190 --host 127.0.0.1 &
+cd -   # back here
+ROCKET_REPO=../rocket-simulation node rocket/rec-canvas.mjs rocket/liftoff-land.json
+python3 rocket/encode.py rocket/out     # clips to src-media/montage/, stills to src-assets/rocket/
+```
+
+`rec-canvas.mjs` opens the mission explorer on the app's virtual clock
+(`?virt=1&capture=1`, its own test flags), waits for the flight scene, seeks
+with the app's `__rocketSeekMission` test hook, sets the camera mode the
+interface offers (Auto or Ground), plays at 1x and reads the WebGL drawing
+buffer after every frame. The interface is hidden with a stylesheet first, so
+the app's own panel insets clear and its director frames the subject for the
+whole canvas; the 0.55 s dissolve from the hangar that plays when the page
+first enters the flight scene is skipped. Nothing in the simulation, its
+trajectories or its camera framings is changed.
+
+| Spec | Mission moment | Window |
+|---|---|---|
+| `fairing-land.json` | Satellite to LEO, T+223.2 s, Auto: the payload fairing separates | 1600x900 |
+| `stagesep-land.json` | T+150 s, Auto: main engine cutoff and stage separation | 1600x900 |
+| `liftoff-land.json` | T+5.5 s, Ground: the climb off the pad | 1600x900 |
+| `fairing-port.json`, `liftoff-port.json` | The same moments, framed by the app for a phone | 720x1280 |
+
+Rendering was done with SwiftShader (a CPU rasteriser), at 10 to 15 s a frame.
+
+Notes from capturing: the release branch's `npm run build` stops at
+`tsc -b` on an unused constant (`HE_UNION_DROP` in
+`src/scene/vehicle/engine/mech.ts`); `vite build` on its own succeeds.
