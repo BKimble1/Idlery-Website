@@ -25,6 +25,7 @@ Standard library only.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
@@ -53,6 +54,34 @@ def render(template: str, *, section: str, over: bool) -> str:
     if leftover:
         raise SystemExit(f"unfilled placeholders: {sorted(set(leftover))}")
     return out.rstrip("\n")
+
+
+# Stylesheet, script and hero video URLs carry a content hash (?v=...), so a
+# deploy can never pair new HTML with a stylesheet or script a browser or CDN
+# cached from the previous one (the headers let those files be cached for a
+# long time). build.py writes the hashes; --check fails if one is stale.
+VERSIONED = re.compile(r'(?P<path>/assets/(?:css|js|video)/[A-Za-z0-9_.-]+\.(?:css|js|mp4|webp|jpg))(?:\?v=[0-9a-f]*)?')
+VIDEO_VERSION = re.compile(r'data-video-v="[0-9a-f]*"')
+
+
+def file_hash(*paths: Path) -> str:
+    h = hashlib.sha256()
+    for path in paths:
+        h.update(path.read_bytes())
+    return h.hexdigest()[:10]
+
+
+def stamp_versions(html: str, path: Path) -> str:
+    def fix(m: re.Match) -> str:
+        f = SITE / m.group("path").lstrip("/")
+        if not f.is_file():
+            raise SystemExit(f"{path}: {m.group('path')} does not exist")
+        return f"{m.group('path')}?v={file_hash(f)}"
+    html = VERSIONED.sub(fix, html)
+    if VIDEO_VERSION.search(html):
+        videos = sorted((SITE / "assets" / "video").glob("hero-*.mp4"))
+        html = VIDEO_VERSION.sub(f'data-video-v="{file_hash(*videos)}"', html)
+    return html
 
 
 DEST_TAG = re.compile(r'<a\b[^>]*\bdata-dest="([a-z]+)"[^>]*>')
@@ -88,7 +117,7 @@ def stamp(html: str, path: Path) -> str:
         partial = (PARTIALS / f"{region}.html").read_text()
         filled = render(partial, section=section, over=over)
         html = pattern.sub(lambda m: m.group(1) + filled + "\n" + m.group(2).lstrip("\n"), html)
-    return stamp_dest_links(html, path)
+    return stamp_versions(stamp_dest_links(html, path), path)
 
 
 def redirects_block() -> str:
@@ -188,6 +217,9 @@ def lint(path: Path, html: str) -> list[str]:
         host = re.sub(r"^https?://([^/]+).*$", r"\1", href) if href.startswith("http") else ""
         if host in hosts and "data-dest=" not in tag:
             errs.append(f"link to {href} without data-dest (let site.config.json own it)")
+    for ref in re.findall(r'/assets/(?:css|js)/[A-Za-z0-9_.-]+(?:\?v=[0-9a-f]*)?', html):
+        if "?v=" not in ref:
+            errs.append(f"{ref} has no ?v= content hash (a cached copy could outlive a deploy)")
     if "\u2014" in html:
         errs.append("an em dash (the site's writing rule: use other punctuation)")
     return errs

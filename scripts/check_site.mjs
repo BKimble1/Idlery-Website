@@ -124,6 +124,9 @@ for (const colorScheme of ["light", "dark"]) {
         for (const a of document.querySelectorAll("a[href]")) out.links.push(a.getAttribute("href"));
         out.nav = [...document.querySelectorAll(".site-nav a")].map((a) => [a.textContent.trim(), a.getAttribute("href")]);
         out.dest = [...document.querySelectorAll("a[data-dest]")].map((a) => [a.dataset.dest, a.getAttribute("href")]);
+        // Stylesheets and scripts are cached for a year, so each URL must name its version.
+        out.unversioned = [...document.querySelectorAll("link[rel=stylesheet], script[src]")].map((e) => e.href || e.src)
+          .filter((u) => !/\?v=[0-9a-f]{10}$/.test(u));
         return out;
       });
       const navWant = [["Work", "/work/"], ["Simulations", CONFIG.destinations.simulations], ["Products", CONFIG.destinations.products],
@@ -134,6 +137,7 @@ for (const colorScheme of ["light", "dark"]) {
       ok(!r.broken.length, where, `broken images: ${r.broken.join(", ")}`);
       ok(!r.ratio.length, where, `image size attributes: ${r.ratio.join("; ")}`);
       ok(!r.small.length, where, `tap targets under 24px: ${r.small.join("; ")}`);
+      ok(!r.unversioned.length, where, `stylesheet or script without a version: ${r.unversioned.join(", ")}`);
       for (const l of r.links) internal.add(l);
       const csp = await page.evaluate(() => window.__csp);
       ok(!csp.length, where, `CSP violations: ${csp.join(", ")}`);
@@ -238,7 +242,8 @@ async function heroState(page) {
   await page.waitForFunction(() => { const v = document.querySelector(".hero video"); return v && !v.paused && v.currentTime > 1.2; }, null, { timeout: 20000 }).catch(() => null);
   let s = await heroState(page);
   ok(s.playing, "hero desktop", "the montage is not playing");
-  ok(/hero-landscape\.(av1\.)?mp4$/.test(s.src), "hero desktop", `landscape cut not chosen: ${s.src}`);
+  ok(/hero-landscape\.(av1\.)?mp4(\?|$)/.test(s.src), "hero desktop", `landscape cut not chosen: ${s.src}`);
+  ok(/\?v=[0-9a-f]{10}$/.test(s.src), "hero desktop", `video URL is not versioned: ${s.src}`);
   ok(!s.hidden && s.label.startsWith("Pause"), "hero desktop", `pause control not shown (${s.label})`);
   ok(s.now.includes("Now showing"), "hero desktop", `no "Now showing" label (${s.now})`);
   await page.click(".hero .hero-toggle");
@@ -339,6 +344,22 @@ async function heroState(page) {
 
 // ---------------------------------------------------- featured-work reel --
 
+// One compact row whatever the width: cards the same size, side by side, the
+// image contained in its box, and on a phone a peek at the next card.
+const reelGeometry = (page) => page.evaluate(() => {
+  const root = document.querySelector("[data-reel]");
+  const items = [...root.querySelectorAll(".reel-track > li")];
+  const rows = new Set(items.map((li) => Math.round(li.getBoundingClientRect().top)));
+  const first = items[0].getBoundingClientRect();
+  const img = items[0].querySelector(".card-media img").getBoundingClientRect();
+  const media = items[0].querySelector(".card-media").getBoundingClientRect();
+  const box = root.getBoundingClientRect();
+  const visible = items.filter((li) => { const r = li.getBoundingClientRect(); return r.right > box.left && r.left < box.right; }).length;
+  return { rows: rows.size, w: first.width, h: first.height, reelH: box.height, visible,
+    widths: new Set(items.map((li) => Math.round(li.getBoundingClientRect().width))).size,
+    contained: img.width <= media.width + 0.5 && img.height <= media.height + 0.5,
+    pageOverflow: document.documentElement.scrollWidth - innerWidth };
+});
 const reelState = (page) => page.evaluate(() => {
   const root = document.querySelector("[data-reel]");
   const track = root.querySelector(".reel-track");
@@ -366,6 +387,9 @@ const reelState = (page) => page.evaluate(() => {
   const d = b.x - a.x;
   ok(d > 10 || d < -200, "reel", `should drift to the right (moved ${d.toFixed(1)}px in 1.5 s)`);
   ok(a.button.startsWith("Pause"), "reel", `pause control should show (${a.button})`);
+  const g0 = await reelGeometry(page);
+  ok(g0.rows === 1 && g0.widths === 1 && g0.w >= 280 && g0.w <= 360 && g0.reelH < 520 && g0.visible >= 4 && g0.contained && g0.pageOverflow <= 0,
+    "reel desktop size", `should be one compact row of equal cards (${JSON.stringify(g0)})`);
   await page.screenshot({ path: join(SHOTS, "home-desktop-reel.png") });
   // Hovering stops it.
   const box = await page.locator("[data-reel]").boundingBox();
@@ -423,6 +447,9 @@ const reelState = (page) => page.evaluate(() => {
   await page.waitForTimeout(800);
   const a = await reelState(page);
   ok(a.moving, "reel phone", "should be moving");
+  const g1 = await reelGeometry(page);
+  ok(g1.rows === 1 && g1.w >= 260 && g1.w <= 390 - 32 - 24 && g1.h < 460 && g1.visible >= 2 && g1.contained && g1.pageOverflow <= 0,
+    "reel phone size", `should show one card and a peek at the next (${JSON.stringify(g1)})`);
   await page.screenshot({ path: join(SHOTS, "home-phone-reel.png") });
   await ctx.close();
 }

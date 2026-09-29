@@ -9,14 +9,17 @@
 The edit lives in montage/shots.json: one entry per shot, in order, with its
 source file, the moment to start from, how long it holds, the crop window it
 pans from and to (fractions of the source frame: [x, y, width, height]), an
-optional grade, and the crossfade into the next shot. Nothing is generated or
-redrawn: every frame is a frame of a real recording or render, or a crop of a
-real capture, moved and faded. There is no title or logo card: the reel runs
-from project footage straight back into project footage.
+optional grade, and how it hands over to the next shot: a cut, a crossfade,
+or a dip through black (see transition()), chosen per transition rather than
+one fade everywhere. Nothing is generated or redrawn: every frame is a frame
+of a real recording or render, or a crop of a real capture, moved, faded or
+dimmed. There is no title or logo card: the reel runs from project footage
+straight back into project footage.
 
-The loop is seamless: the first frames of the first shot are held back and the
-last shot crossfades into them, so the file wraps without a cut, and the poster
-(the first frame of the file) is exactly where the loop lands.
+The loop is seamless: with a crossfade, the first frames of the first shot are
+held back and the last shot fades into them, so the file wraps without a jump,
+and the poster (the first frame of the file) is exactly where the loop lands.
+With a cut, the last frame simply meets the first.
 
 Outputs:
     site/assets/video/hero-<cut>.av1.mp4 / .mp4 web encodes (AV1, H.264), silent
@@ -155,13 +158,29 @@ def blend(a: np.ndarray, b: np.ndarray, t: float) -> np.ndarray:
 
 # ------------------------------------------------------------------- build --
 
+def transition(shot: dict) -> dict:
+    """How a shot hands over to the next one. {"type": "cut"}, {"type":
+    "fade", "duration": s} (a crossfade: the two shots overlap) or {"type":
+    "dip", "duration": s} (out to black, then in from black: no overlap, so
+    no double image, and a change of brightness reads as deliberate). The
+    older "fade": seconds field still works."""
+    t = shot.get("transition")
+    if t is not None:
+        return t
+    f = shot.get("fade", 0)
+    return {"type": "fade", "duration": f} if f else {"type": "cut"}
+
+
 def build(cut: str) -> list[dict]:
     spec = SPEC[cut]
     fps = SPEC["fps"]
     size = tuple(spec["size"])
     shots = spec["shots"]
     check_windows(cut, shots, size)
-    loop_n = round(SPEC.get("loop_fade", 0.6) * fps)
+    # The loop (last shot back into the first) is a crossfade or a cut. A
+    # crossfade lands on the first shot's opening frames, held back for it.
+    loop = spec.get("loop", {"type": "fade", "duration": SPEC.get("loop_fade", 0.6)})
+    loop_n = round(loop.get("duration", 0) * fps) if loop["type"] == "fade" else 0
     BUILD.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
 
@@ -174,18 +193,24 @@ def build(cut: str) -> list[dict]:
 
     head: list[np.ndarray] = []    # the first shot's opening frames: the loop's landing
     tail: list[np.ndarray] = []    # the previous shot's closing frames, for its crossfade
+    dip_in = 0                     # frames of fade-up from black owed by the previous dip
     chapters: list[dict] = []
     poster = None
     written = 0
 
+    def dim(f: np.ndarray, k: float) -> np.ndarray:
+        return (f.astype(np.float32) * k + 0.5).astype(np.uint8)
+
     for si, shot in enumerate(shots):
         last = si == len(shots) - 1
+        out = loop if last else transition(shot)
         n = max(2, round(shot["duration"] * fps))
         fade_in = len(tail)
-        fade_out = loop_n if last else round(shot.get("fade", 0) * fps)
+        fade_out = round(out.get("duration", 0) * fps) if out["type"] == "fade" else 0
+        dip_out = round(out.get("duration", 0) * fps / 2) if out["type"] == "dip" else 0
         reserve = loop_n if si == 0 else 0
-        if n < fade_in + fade_out + reserve:
-            raise SystemExit(f"{cut} shot {si} ({shot['source']}) is too short for its fades")
+        if n < fade_in + fade_out + reserve + dip_in + dip_out:
+            raise SystemExit(f"{cut} shot {si} ({shot['source']}) is too short for its transitions")
         if "chapter" in shot:
             chapters.append({"t": round((written + fade_in / 2) / fps, 2),
                              "name": shot["chapter"], "kind": shot.get("kind", "")})
@@ -194,16 +219,22 @@ def build(cut: str) -> list[dict]:
             if i < reserve:
                 head.append(f)
                 continue
-            if i < fade_in:
-                f = blend(tail[i], f, smooth((i + 1) / (fade_in + 1)))
+            j = i - reserve                              # index among the frames that play
+            if j < fade_in:
+                f = blend(tail[j], f, smooth((j + 1) / (fade_in + 1)))
+            if j < dip_in:
+                f = dim(f, smooth((j + 1) / (dip_in + 1)))
             if i >= n - fade_out:
                 new_tail.append(f)
                 continue
+            if i >= n - dip_out:
+                f = dim(f, 1 - smooth((i - (n - dip_out) + 1) / (dip_out + 1)))
             if poster is None:
                 poster = f
             enc.stdin.write(f.tobytes())
             written += 1
         tail = new_tail
+        dip_in = dip_out if not last else 0
 
     for i in range(loop_n):                       # close the loop onto the opening frames
         enc.stdin.write(blend(tail[i], head[i], smooth((i + 1) / (loop_n + 1))).tobytes())

@@ -15,33 +15,57 @@ so there they fit exactly.
 
 ## The sequence
 
-Landscape, about 27 seconds:
+Landscape, 26 seconds:
 
-| Chapter ("Now showing") | Shot | Source |
+| Chapter ("Now showing") | Shot | Into the next |
 |---|---|---|
-| Rocket Engineering · Simulation | The payload fairing separates over the Earth, the upper stage firing | Rocket Engineering, rendered frame by frame |
-| Fab One · Semiconductor simulation | Pull back from a wafer to the whole fab; the developer, then the dive into the cross-section | Fab One, rendered frame by frame |
-| Karnwold · Strategy game | The table in round 3; a Barracks being built | Karnwold's production build |
-| CoreCredit · Product | The iPad dashboard, pushing in to the money at risk | A real iPad capture |
-| Rocket Engineering · Simulation | Liftoff: the vehicle climbing off the pad on its plume | Rocket Engineering |
-| Elemora · Chemistry product | A slow wall of Elemora's screens: study, the table, an element, a compound | Real iPhone captures, composed by `montage/compose.py` |
-| Holograph · Interface experiment | The launcher's glass tiles, pushing in to the selected one | A real iPad simulator screenshot |
-| Rocket Engineering · Simulation | After stage separation: the upper-stage engine lights (the green flash is its hypergolic igniter) and the booster falls away | Rocket Engineering |
+| Rocket Engineering · Simulation | The payload fairing separates over the Earth, the upper stage firing (2.4 s) | cut |
+| Holograph · Interface experiment | The launcher's glass tiles, then the same launcher after centring on a tile, each drifting in (1.5 s each) | cut |
+| Karnwold · Strategy game | The table in round 3; a Barracks being built (2.3 s, 2.2 s) | dip through black, 0.6 s |
+| Fab One · Semiconductor simulation | Pull back from a wafer to the whole fab; the developer running (2.1 s, 2.0 s) | cut |
+| CoreCredit · Product | The iPad dashboard pushing in to the money at risk; the cores screen (1.9 s, 1.5 s) | cut |
+| Elemora · Chemistry product | A slow wall of Elemora's screens (2.4 s) | cut |
+| Rocket Engineering · Simulation | Liftoff, the vehicle climbing on its plume (3.0 s); after stage separation, the upper-stage engine lights (the green flash is its hypergolic igniter) and the booster falls away (3.2 s) | cut back to the first shot: from the wide view of the upper stage in to the close fairing, on the same diagonal |
 
-The last shot crossfades into the first (space into space), so the file loops
-with no visible cut and no title card. The poster is the first frame of the
-file, which is also where the loop lands.
+Portrait and phone, 24.2 seconds each, in the same order: the fairing
+separation (3.6 s), Holograph's launcher and its portrait layout, the Karnwold
+table and build, a dip through black, Fab One's pullback and developer,
+CoreCredit's phone dashboard and card scan, Elemora's Build screen (caffeine)
+and oxygen's element page, and liftoff with the whole vehicle in frame (3.6 s);
+then a cut back to the fairing.
 
-Portrait and phone, about 25 seconds each: the fairing separation, Fab One's
-developer, the Karnwold table and build, CoreCredit's dashboard filling the
-screen, liftoff with the whole vehicle in frame, Elemora's Build screen
-pushing in to caffeine's skeletal structure, and Holograph's launcher; then
-back to the fairing.
+### How it is edited
+
+* **Short holds on stills.** No still capture holds longer than 1.9 s. Each
+  product gets two real states (a dashboard, then a detail) instead of one long
+  push-in, and every still keeps moving: a slow push or drift on an eased curve.
+* **Tone runs in groups.** The dark footage (space, Holograph's glass, the
+  Karnwold table) comes first; one dip through black carries it into the
+  bright group (Fab One's clean room, CoreCredit, Elemora), which cuts to the
+  daylight launch pad and climbs back into space. Nothing jumps straight from
+  a dark frame to a white screen.
+* **Transitions are chosen per join.** Joins between different subjects are
+  hard cuts, which read as deliberate and never leave a double image. The one
+  dip through black is where brightness changes most. There is no crossfade:
+  the only place one was tried, the loop, stacked two rockets for a third of a
+  second, so every cut now wraps on a hard cut instead (landscape from the
+  wide view of the upper stage in to the close fairing on the same diagonal,
+  the tall cuts from the climbing rocket to the fairing). Fab One's developer
+  clip starts after the app's own camera dissolve, so it never shows two views
+  at once.
+* **The headline stays readable.** Bright shots carry a `grade` that brings
+  them down under the white headline, and the page adds a scrim. The worst
+  frame measured on the page (95th percentile luminance behind the words,
+  sampled every half second) keeps the headline at 6.4:1 or better on a
+  1440x900 desktop, 5.1:1 on a portrait tablet and 8.4:1 on a phone.
+
+The file wraps with no title card and no logo. The poster is the first frame
+of the file, which is also where the loop lands.
 
 Every frame is real: renders by the simulators' own renderers, gameplay from
 Karnwold's production build, and unmodified crops of product captures. The
 only composed frames are the Elemora wall (real screens laid out on Elemora's
-own background colour; see `compose.py`) and the crossfades.
+own background colour; see `compose.py`) and the transitions.
 
 ## Rebuild it
 
@@ -59,7 +83,7 @@ times the "Now showing" label reads, into `site/index.html`.
 
 ## Edit it
 
-`shots.json` holds both cuts. Each shot:
+`shots.json` holds all three cuts. Each shot:
 
 | Field | Meaning |
 |---|---|
@@ -70,12 +94,16 @@ times the "Now showing" label reads, into `site/index.html`.
 | `from`, `to` | the crop window at the start and end of the shot, as `[x, y, width, height]` fractions of the source frame. The window moves between them: a pan, a push-in, or a pull-out. Keep the window's shape the same as the cut's (16:9 or 9:16 after multiplying by the source size) or the build refuses it |
 | `ease` | `"smooth"` for an eased move; linear otherwise |
 | `grade` | optional global `brightness`, `contrast`, `gamma`, `saturation`. Used only to bring bright shots down under the white headline |
-| `fade` | the crossfade into the next shot, in seconds |
+| `transition` | how the shot hands over to the next: `{"type": "cut"}`, `{"type": "fade", "duration": 0.5}` (a crossfade; the shots overlap) or `{"type": "dip", "duration": 0.6}` (down to black and up from black, with no overlap). The older `"fade": seconds` still works |
 | `chapter`, `kind` | what the "Now showing" label says from this shot on (`""` hides it) |
 
-`loop_fade` is the crossfade from the last shot back into the first. The first
-shot's opening frames are held back and used as the target of that crossfade,
-so the file wraps without a visible cut. A shot must be longer than its fades.
+Each cut's `loop` is how its last shot hands back to the first: `{"type":
+"fade", "duration": s}` holds back the first shot's opening frames and
+crossfades the last shot into them, so the file wraps without a jump; `{"type":
+"cut"}` lets the last frame meet the first. A shot must be longer than its
+transitions. Every cut uses `{"type": "cut"}` today. A crossfade is only safe
+where the two frames share no subject that could be seen twice: two rockets,
+two screens or two game tables dissolving together read as a double image.
 
 Web encodes are set per cut under `web`: output size and the AV1 and H.264
 quality (`crf`, lower is better and bigger). AV1 is listed first in the page;

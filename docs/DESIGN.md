@@ -50,6 +50,13 @@ up a little while the page scrolls, and never runs under
 `prefers-reduced-motion`; then, and without scripting, it is a plain row you
 scroll.
 
+Each card is a fixed-width flex item (`flex: 0 0 var(--card-w)`, from 15rem to
+21rem, 78% of a phone screen), with `min-width: 0` down the chain and its image
+contained in a 4:3 box, so a long word or a large image can never widen a card
+or wrap the row. Desktop shows three whole cards and parts of two more; a phone
+shows one card and a peek at the next. The stylesheet link is versioned (see
+the README), so the reel's markup and its styles always arrive together.
+
 ## Type
 
 * **Manrope** (variable, 25 KB, SIL OFL) for everything. Its geometry is the
@@ -106,7 +113,12 @@ light renders; bright shots are also graded down slightly in the edit.
 * The reel is decorative: the page says everything it shows, so the video is
   `aria-hidden` and out of the tab order; the "Now showing" label is hidden
   from assistive technology too.
-* No title or logo card: the last shot dissolves into the first.
+* No title or logo card: the reel runs from footage straight back into
+  footage, wrapping on a hard cut from a rocket shot to the fairing.
+* Paced in short shots: no still capture holds much more than a second and a
+  half, and each product shows two real states rather than one long push-in.
+  Dark and bright footage run in groups joined by one dip through black, and
+  every other join is a hard cut, so no dissolve ever stacks two pictures.
 
 ## Motion
 

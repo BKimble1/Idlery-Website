@@ -79,6 +79,16 @@ and social tags, `alt` and dimensions on every image, no em dashes, and nothing
 the Content-Security-Policy would block (inline `style=` attributes, inline
 scripts, `onclick`).
 
+**Versioned assets.** `build.py` also stamps every link to the stylesheet, the
+script, the hero posters and the hero video with a short content hash
+(`/assets/css/site.css?v=` and ten hex characters). `_headers` caches those three folders
+for a year (`immutable`), so a returning visitor never pairs new HTML with an
+old stylesheet: a changed file has a new URL. After editing `site.css`,
+`site.js` or rebuilding the reel, run `python3 scripts/build.py`; `--check`
+(run by `make_zip.py` and the site checks) fails if a hash is out of date, and
+the lint fails on any stylesheet or script link without one. Images and fonts
+keep plain names and a one hour cache.
+
 **Where "Simulations", "Products" and "Portfolio" point** is set in
 `site.config.json`, under `destinations`, and nowhere else. `build.py` writes
 those addresses into the navigation and footer, and into every link in page
@@ -115,15 +125,18 @@ python3 montage/compose.py                  # the Elemora wall, if its captures 
 python3 scripts/build_montage.py            # all three cuts
 ```
 
-A silent studio reel of real project footage: Rocket Engineering, Fab One,
-Karnwold, CoreCredit, Elemora and Holograph, about 27 s in landscape and 25 s
-in two separately composed tall cuts (9:16 for portrait tablets, 9:19.5 for
-phones), looping from footage straight back into footage with no title card. The edit is `montage/shots.json`;
+A silent studio reel of real project footage: Rocket Engineering, Holograph,
+Karnwold, Fab One, CoreCredit and Elemora, 26 s in landscape and 24 s in two
+separately composed tall cuts (9:16 for portrait tablets, 9:19.5 for phones),
+looping from footage straight back into footage with no title card. Each join
+is a hard cut or, where the brightness changes most, a dip through black; the
+builder also supports crossfades, but none is used. The edit is `montage/shots.json`;
 `montage/README.md` explains every field and where each piece of footage came
 from, and `montage/capture/` holds the scripts that rendered the simulator
 footage. The script writes the web encodes (AV1 and H.264 MP4) and posters to
 `site/assets/video/`, and the "Now showing" chapter times into
-`site/index.html`. The page plays the landscape cut on wide screens, the
+`site/index.html`; run `python3 scripts/build.py` afterwards to restamp the
+video's version hash. The page plays the landscape cut on wide screens, the
 portrait cut on portrait tablets and the phone cut on phones, never under `prefers-reduced-motion` or Save-Data,
 pauses it off screen, and has a visible Pause button. With scripting off, the
 poster is shown.

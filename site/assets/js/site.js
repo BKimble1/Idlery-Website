@@ -74,11 +74,14 @@
       var which = rendition();
       if (loadedFor === which) return;
       var base = video.getAttribute("data-" + which);
+      // build.py stamps a hash of the video files, so a new cut is never
+      // mixed up with a cached old one.
+      var v = video.getAttribute("data-video-v");
       while (video.firstChild) video.removeChild(video.firstChild);
       // AV1 first (smaller); every browser that cannot play it takes the H.264 file.
       [["av1.mp4", 'video/mp4; codecs="av01.0.08M.08"'], ["mp4", "video/mp4"]].forEach(function (f) {
         var s = document.createElement("source");
-        s.src = base + "." + f[0];
+        s.src = base + "." + f[0] + (v ? "?v=" + v : "");
         s.type = f[1];
         video.appendChild(s);
       });

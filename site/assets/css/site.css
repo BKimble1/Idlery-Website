@@ -569,12 +569,16 @@ a:hover { color: var(--ink); }
 .section-sub { margin: .55rem 0 0; color: var(--ink-3); max-width: 46ch; }
 
 .reel {
-  --card-w: min(21rem, 72vw);
+  /* Several cards across a laptop; on a phone, one comfortable card and a
+     peek at the next. */
+  --card-w: clamp(15rem, 78vw, 21rem);
   --reel-gap: clamp(.9rem, 1.6vw, 1.25rem);
   position: relative;
 }
 .reel-track {
   display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
   margin: 0;
   padding: .25rem max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter))) 1.5rem;
   list-style: none;
@@ -585,7 +589,17 @@ a:hover { color: var(--ink); }
   scrollbar-width: thin;
   scrollbar-color: var(--rule-strong) transparent;
 }
-.reel-track > li { flex: 0 0 var(--card-w); display: flex; scroll-snap-align: start; }
+/* Every card is exactly --card-w: a fixed basis, a matching width and
+   min/max, and min-width: 0 so long words or a large image can never widen
+   it. */
+.reel-track > li {
+  flex: 0 0 var(--card-w);
+  width: var(--card-w);
+  min-width: 0;
+  max-width: var(--card-w);
+  display: flex;
+  scroll-snap-align: start;
+}
 .reel-track > li + li { margin-left: var(--reel-gap); }
 .reel-track:focus-visible { outline-offset: -3px; }
 
@@ -636,6 +650,7 @@ a:hover { color: var(--ink); }
   display: flex;
   flex-direction: column;
   width: 100%;
+  min-width: 0;
   border-radius: var(--radius-lg);
   background: var(--card);
   box-shadow: var(--shadow);
@@ -646,12 +661,17 @@ a:hover { color: var(--ink); }
 .card:focus-within { box-shadow: var(--shadow), 0 0 0 3px var(--teal-ink); }
 .card-media {
   position: relative;
+  flex: none;
   aspect-ratio: 4 / 3;
   background: var(--media-bg, var(--paper-2));
   overflow: hidden;
+  contain: paint;
 }
+.card-media picture { display: block; width: 100%; height: 100%; }
 .card-media img {
+  display: block;
   width: 100%; height: 100%;
+  max-width: 100%;
   object-fit: cover;
   transition: transform .6s ease;
 }
@@ -660,6 +680,7 @@ a:hover { color: var(--ink); }
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-width: 0;
   padding: 1.05rem 1.2rem 1.25rem;
 }
 .card-body .label { margin-bottom: .5rem; font-size: .74rem; }
