@@ -266,8 +266,17 @@ async function heroState(page) {
   await page.goto(BASE + "/", { waitUntil: "load" });
   await page.waitForFunction(() => { const v = document.querySelector(".hero video"); return v && !v.paused && v.currentTime > 0.5; }, null, { timeout: 20000 }).catch(() => null);
   const s = await heroState(page);
-  ok(s.playing && /hero-portrait\./.test(s.src), "hero phone", `portrait cut not playing: ${s.src}`);
+  ok(s.playing && /hero-phone\./.test(s.src), "hero phone", `phone cut not playing: ${s.src}`);
   await page.screenshot({ path: join(SHOTS, "home-phone-hero-playing.png") });
+  await ctx.close();
+}
+{
+  const { ctx, page } = await newPage({ viewport: { width: 834, height: 1194 }, isMobile: true, hasTouch: true });
+  await page.goto(BASE + "/", { waitUntil: "load" });
+  await page.waitForFunction(() => { const v = document.querySelector(".hero video"); return v && !v.paused && v.currentTime > 0.5; }, null, { timeout: 20000 }).catch(() => null);
+  const s = await heroState(page);
+  ok(s.playing && /hero-portrait\./.test(s.src), "hero tablet", `portrait cut not playing on a portrait tablet: ${s.src}`);
+  await page.screenshot({ path: join(SHOTS, "home-tablet-hero-playing.png") });
   await ctx.close();
 }
 {
@@ -441,7 +450,7 @@ try {
 } catch (e) {
   fail("build.py --check", String(e.stdout || e.message).trim().split("\n").slice(0, 6).join(" / "));
 }
-for (const f of ["hero-landscape.av1.mp4", "hero-landscape.mp4", "hero-portrait.av1.mp4", "hero-portrait.mp4"]) {
+for (const f of ["hero-landscape.av1.mp4", "hero-landscape.mp4", "hero-portrait.av1.mp4", "hero-portrait.mp4", "hero-phone.av1.mp4", "hero-phone.mp4"]) {
   try { notes.push(`${f}: ${(statSync(join(SITE, "assets", "video", f)).size / 1024).toFixed(0)} KB`); }
   catch { fail("video", `${f} is missing`); }
 }

@@ -96,9 +96,10 @@ trajectories or its camera framings is changed.
 | Spec | Mission moment | Window |
 |---|---|---|
 | `fairing-land.json` | Satellite to LEO, T+223.2 s, Auto: the payload fairing separates | 1600x900 |
-| `stagesep-land.json` | T+150 s, Auto: main engine cutoff and stage separation | 1600x900 |
+| `ses1-land.json` | T+155.5 s, Auto: after stage separation, the upper stage's igniter flashes green, its engine lights and the booster falls away | 1600x900 |
 | `liftoff-land.json` | T+5.5 s, Ground: the climb off the pad | 1600x900 |
-| `fairing-port.json`, `liftoff-port.json` | The same moments, framed by the app for a phone | 720x1280 |
+| `fairing-port.json`, `liftoff-port.json` | The same moments, framed by the app for a portrait tablet | 720x1280 |
+| `fairing-phone.json`, `liftoff-phone.json` | The same moments, framed by the app for a phone | 720x1560 |
 
 Rendering was done with SwiftShader (a CPU rasteriser), at 10 to 15 s a frame.
 

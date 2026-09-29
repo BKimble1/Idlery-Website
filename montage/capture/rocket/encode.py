@@ -28,14 +28,16 @@ except ImportError:
 
 TAKES = {                       # take -> clip in src-media/montage/
     "fairing-land": "rocket-fairing-900p.mp4",
-    "stagesep-land": "rocket-stagesep-900p.mp4",
+    "ses1-land": "rocket-separation-900p.mp4",
     "liftoff-land": "rocket-liftoff-900p.mp4",
     "fairing-port": "rocket-fairing-portrait.mp4",
     "liftoff-port": "rocket-liftoff-portrait.mp4",
+    "fairing-phone": "rocket-fairing-phone.mp4",
+    "liftoff-phone": "rocket-liftoff-phone.mp4",
 }
 STILLS = {                      # still in src-assets/rocket/ -> (take, frame)
     "fairing.png": ("fairing-land", 118),
-    "stage-separation.png": ("stagesep-land", 130),
+    "stage-separation.png": ("ses1-land", 128),
     "liftoff.png": ("liftoff-land", 90),
 }
 

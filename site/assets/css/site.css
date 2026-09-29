@@ -789,6 +789,7 @@ a:hover { color: var(--ink); }
   color: var(--on-night-3);
 }
 .footer-legal p { margin: 0; max-width: 70ch; }
+.footer-legal a { display: inline-block; padding: .35rem 0; }
 @media (max-width: 900px) { .footer-top { grid-template-columns: 1fr 1fr; } .footer-brand { grid-column: 1 / -1; } }
 .site-footer--bare { margin-top: 0; padding-top: 2rem; }
 

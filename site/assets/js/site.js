@@ -55,7 +55,10 @@
       try { chapters = JSON.parse(video.getAttribute("data-chapters-" + which) || "[]"); } catch (e) { chapters = []; }
     }
 
-    var portrait = window.matchMedia("(max-width: 760px) and (orientation: portrait)");
+    // Three cuts, each framed for its screen: phones (about 9:19.5), portrait
+    // tablets (9:16) and everything wider (16:9).
+    var phone = window.matchMedia("(max-width: 600px) and (orientation: portrait)");
+    var portrait = window.matchMedia("(max-width: 1100px) and (orientation: portrait)");
     var saveData = !!(navigator.connection && navigator.connection.saveData);
     var loadedFor = null;   // which rendition the <source>s currently point at
     var wanted = !reduceMotion.matches && !saveData;
@@ -63,6 +66,7 @@
     var visible = true;
 
     function rendition() {
+      if (phone.matches && video.getAttribute("data-phone")) return "phone";
       return portrait.matches && video.getAttribute("data-portrait") ? "portrait" : "landscape";
     }
 
@@ -150,13 +154,15 @@
       wanted = !e.matches && !saveData;
       if (e.matches) pause();
     });
-    portrait.addEventListener("change", function () {
+    function reframe() {
       if (loadedFor && loadedFor !== rendition()) {
         var playing = !video.paused;
         load();
         if (playing) play();
       }
-    });
+    }
+    portrait.addEventListener("change", reframe);
+    phone.addEventListener("change", reframe);
 
     if (wanted) play(); else show("paused");
   }

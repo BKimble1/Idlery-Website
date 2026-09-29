@@ -67,15 +67,16 @@ exactly 1/30 s per frame), with its documented `quality=high` tier, reading the
 WebGL buffer directly so no interface is in the frame. The interface layer is
 hidden with a stylesheet during capture, so the app's own panel insets clear
 and its director frames the subject for the whole canvas. The satellite-to-orbit
-mission: liftoff (Ground camera), stage separation and payload fairing
-separation (the mission's Auto camera), in 1600x900 and 720x1280 windows.
+mission: liftoff (Ground camera), upper-stage ignition after stage separation,
+and payload fairing separation (the mission's Auto camera), in 1600x900, 720x1280
+and 720x1560 windows.
 Scripts and specs: `montage/capture/rocket/`.
 
 | File | What it is |
 |---|---|
-| `src-media/montage/rocket-fairing-900p.mp4`, `rocket-fairing-portrait.mp4` | T+223 to T+228 s: the fairing halves open over the Earth, the upper-stage engine firing |
-| `src-media/montage/rocket-stagesep-900p.mp4` | T+150 to T+154.5 s: stage separation |
-| `src-media/montage/rocket-liftoff-900p.mp4`, `rocket-liftoff-portrait.mp4` | Liftoff from the pad |
+| `src-media/montage/rocket-fairing-900p.mp4`, `rocket-fairing-portrait.mp4`, `rocket-fairing-phone.mp4` | T+223 to T+228 s: the fairing halves open over the Earth, the upper-stage engine firing |
+| `src-media/montage/rocket-separation-900p.mp4` | T+155.5 to T+160.5 s: the upper stage's igniter flashes green, its engine lights, the booster falls away |
+| `src-media/montage/rocket-liftoff-900p.mp4`, `rocket-liftoff-portrait.mp4`, `rocket-liftoff-phone.mp4` | Liftoff from the pad |
 | `src-assets/rocket/fairing.png`, `stage-separation.png`, `liftoff.png` | Single frames from those takes, for the cards |
 
 The vehicle is the simulator's own generic design (the KIMBLE K-1); no agency's

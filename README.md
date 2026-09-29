@@ -112,19 +112,19 @@ the previous site are kept byte for byte under their old names
 ```sh
 pip install Pillow numpy imageio-ffmpeg
 python3 montage/compose.py                  # the Elemora wall, if its captures changed
-python3 scripts/build_montage.py            # both cuts
+python3 scripts/build_montage.py            # all three cuts
 ```
 
 A silent studio reel of real project footage: Rocket Engineering, Fab One,
 Karnwold, CoreCredit, Elemora and Holograph, about 27 s in landscape and 25 s
-in a separately composed portrait cut, looping from footage straight back into
-footage with no title card. The edit is `montage/shots.json`;
+in two separately composed tall cuts (9:16 for portrait tablets, 9:19.5 for
+phones), looping from footage straight back into footage with no title card. The edit is `montage/shots.json`;
 `montage/README.md` explains every field and where each piece of footage came
 from, and `montage/capture/` holds the scripts that rendered the simulator
 footage. The script writes the web encodes (AV1 and H.264 MP4) and posters to
 `site/assets/video/`, and the "Now showing" chapter times into
-`site/index.html`. The page plays the landscape cut on wide screens and the
-portrait cut on phones, never under `prefers-reduced-motion` or Save-Data,
+`site/index.html`. The page plays the landscape cut on wide screens, the
+portrait cut on portrait tablets and the phone cut on phones, never under `prefers-reduced-motion` or Save-Data,
 pauses it off screen, and has a visible Pause button. With scripting off, the
 poster is shown.
 
@@ -143,7 +143,7 @@ image dimensions, tap targets under 24 px, dead internal links, navigation that
 does not match `site.config.json`, any redirect rule that does not do what it
 says, and linked hostnames that do not resolve. The three separate sites are
 exempt from that last check and reported as "not live yet" instead. It also
-checks the hero video (autoplay, pause, portrait cut, reduced motion), the
+checks the hero video (autoplay, pause, the phone and tablet cuts, reduced motion), the
 featured-work reel (drift, hover, Pause, keyboard focus, reduced motion), the
 no-script layout, keyboard order and the phone menu. Screenshots land in
 `.preview/`.

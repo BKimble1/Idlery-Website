@@ -89,8 +89,9 @@ are the Idlery app icon from `BKimble1/CoreCredit-Legal/brand/`.
 
 ## The hero
 
-A full-bleed montage of real footage with the headline over a scrim that is
-darkest behind the words (86% at the left edge on desktop, 94% at the bottom on
+A full-bleed studio reel of real footage (Rocket Engineering, Fab One,
+Karnwold, CoreCredit, Elemora and Holograph; see `montage/README.md`) with the
+headline over a scrim that is darkest behind the words (86% at the left edge on desktop, 94% at the bottom on
 phones), so white text holds contrast over every frame, including Fab One's
 light renders; bright shots are also graded down slightly in the edit.
 
@@ -98,25 +99,31 @@ light renders; bright shots are also graded down slightly in the edit.
   `prefers-reduced-motion` or Save-Data. It pauses when scrolled off screen.
 * A visible Pause/Play button (WCAG 2.2.2) and a quiet "Now showing" label that
   names each project as it appears.
-* Landscape cut on wide screens, portrait cut on phones. Without scripting, or
-  before the video loads, the first frame is shown as a still.
+* Three cuts, each framed for its screen: landscape (16:9) on wide screens,
+  portrait (9:16) on portrait tablets, and phone (9:19.5) on phones, so
+  full-screen interface shots are never clipped at the sides. Without
+  scripting, or before the video loads, the first frame is shown as a still.
+* The reel is decorative: the page says everything it shows, so the video is
+  `aria-hidden` and out of the tab order; the "Now showing" label is hidden
+  from assistive technology too.
+* No title or logo card: the last shot dissolves into the first.
 
 ## Motion
 
-Only the hero moves on its own. The featured carousel never auto-advances; it
-scrolls when asked (buttons, swipe, trackpad, arrow keys). Hover lifts cards by
-3 px. Everything decorative switches off under `prefers-reduced-motion`.
+Two things move on their own, both with a visible Pause control and both
+stopped under `prefers-reduced-motion`: the hero reel, and the featured-work
+reel, which drifts slowly to the right (about 26 px a second) and eases to a
+stop under the pointer or keyboard focus. Hover lifts cards by 3 px.
 
-## The carousel
+## The featured-work reel
 
-A horizontally scrolling list with scroll-snap. With scripting: Previous/Next
-buttons (disabled at the ends), and ArrowLeft/ArrowRight/Home/End move between
-projects once focus is on one. Tab reaches each project once. Without
-scripting (`@media (scripting: none)`) it is a plain grid, and the dead buttons
-are hidden.
+See "The featured-work reel" under Structure. Tab reaches each of the six
+projects once (the looping copies are `inert`); focusing one stops the reel
+and brings it fully into view. Without scripting, or with reduced motion, it
+is a plain row you scroll, and the Pause button is not shown.
 
 ## JavaScript and the security headers
 
-`site.js` is the only script (about 7 KB unminified). The CSP change is exactly
+`site.js` is the only script (about 14 KB unminified). The CSP change is exactly
 `script-src 'none'` to `script-src 'self'`. There are no inline scripts,
 styles or event handlers; `scripts/build.py` fails the build if one appears.

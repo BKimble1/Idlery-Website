@@ -1,11 +1,17 @@
 # The hero reel
 
-A silent, looping studio reel for the home page, in two purpose-built cuts:
-**landscape** (1920x1080 master, 1600x900 on the web) for wide screens and
-**portrait** (1080x1920 master, 720x1280 on the web) for phones. The portrait
-cut is not a crop of the landscape one: the rocket shots are rendered by the
-simulator itself in a 9:16 window, and every other shot has its own portrait
-framing or source (a full-screen phone interface instead of a wide one).
+A silent, looping studio reel for the home page, in three purpose-built cuts:
+**landscape** (16:9; 1920x1080 master, 1600x900 on the web) for wide screens,
+**portrait** (9:16; 1080x1920 master, 720x1280 on the web) for portrait
+tablets, and **phone** (about 9:19.5, the shape of a modern phone screen;
+1080x2340 master, 720x1560 on the web). Neither tall cut is a crop of the
+landscape one: the rocket shots are rendered by the simulator itself in a
+window of that shape, so its own camera director frames them, and every other
+shot has its own framing or source (a phone interface filling the screen edge
+to edge instead of a wide one). The phone cut exists because a 9:16 video
+covering a 390x844 screen loses about a tenth of its width on each side, which
+clips full-screen interface shots; the phone captures are themselves 9:19.5,
+so there they fit exactly.
 
 ## The sequence
 
@@ -20,16 +26,17 @@ Landscape, about 27 seconds:
 | Rocket Engineering · Simulation | Liftoff: the vehicle climbing off the pad on its plume | Rocket Engineering |
 | Elemora · Chemistry product | A slow wall of Elemora's screens: study, the table, an element, a compound | Real iPhone captures, composed by `montage/compose.py` |
 | Holograph · Interface experiment | The launcher's glass tiles, pushing in to the selected one | A real iPad simulator screenshot |
-| Rocket Engineering · Simulation | Stage separation, the booster falling away | Rocket Engineering |
+| Rocket Engineering · Simulation | After stage separation: the upper-stage engine lights (the green flash is its hypergolic igniter) and the booster falls away | Rocket Engineering |
 
 The last shot crossfades into the first (space into space), so the file loops
 with no visible cut and no title card. The poster is the first frame of the
 file, which is also where the loop lands.
 
-Portrait, about 25 seconds: the fairing separation, Fab One's developer, the
-Karnwold table and build, CoreCredit's dashboard filling the phone screen and
-scrolling, liftoff, Elemora's Build screen pushing in to caffeine's skeletal
-structure, and Holograph's launcher; then back to the fairing.
+Portrait and phone, about 25 seconds each: the fairing separation, Fab One's
+developer, the Karnwold table and build, CoreCredit's dashboard filling the
+screen, liftoff with the whole vehicle in frame, Elemora's Build screen
+pushing in to caffeine's skeletal structure, and Holograph's launcher; then
+back to the fairing.
 
 Every frame is real: renders by the simulators' own renderers, gameplay from
 Karnwold's production build, and unmodified crops of product captures. The
@@ -41,7 +48,7 @@ own background colour; see `compose.py`) and the crossfades.
 ```sh
 pip install Pillow numpy imageio-ffmpeg
 python3 montage/compose.py                  # the Elemora wall, if its captures changed
-python3 scripts/build_montage.py            # both cuts, several minutes
+python3 scripts/build_montage.py            # all three cuts, several minutes
 python3 scripts/build_montage.py portrait   # one cut
 ```
 
@@ -78,7 +85,7 @@ browsers that cannot play it take the H.264 file.
 
 | File | Source |
 |---|---|
-| `src-media/montage/rocket-*.mp4` | Rocket Engineering (`BKimble1/rocket-simulation`, branch `claude/kimble-rocket-engineering`, commit `6bdec75`), production build, rendered frame by frame on the app's own virtual clock (`?virt=1`), reading the WebGL buffer so no interface is in frame. Satellite-to-orbit mission: liftoff (ground camera, T+5.5 s), stage separation (T+150 s) and fairing separation (T+223 s) (the app's Auto camera). The portrait takes are the same moments rendered in a 720x1280 window, framed by the app's own director. Scripts and specs: `capture/rocket/` |
+| `src-media/montage/rocket-*.mp4` | Rocket Engineering (`BKimble1/rocket-simulation`, branch `claude/kimble-rocket-engineering`, commit `6bdec75`), production build, rendered frame by frame on the app's own virtual clock (`?virt=1`), reading the WebGL buffer so no interface is in frame. Satellite-to-orbit mission: liftoff (Ground camera, from T+5.5 s), upper-stage ignition after stage separation (from T+155.5 s) and payload fairing separation (from T+223 s), the last two with the app's Auto camera. The portrait and phone takes are the same moments rendered in 720x1280 and 720x1560 windows, framed by the app's own director. Scripts and specs: `capture/rocket/` |
 | `fabone-*.mp4` | Fab One (`Photolithography-Simulation-Site`, round-four branch), production build, rendered frame by frame on the app's virtual clock (`?virt=1&capture=1`), reading the WebGL canvas. Scripts and specs: `capture/fabone/` |
 | `karnwold-table-1080p.mp4`, `karnwold-build-1080p.mp4` | Karnwold production build, offline game against three bots, round 3; clock-stepped 1920x1080 capture. Scripts: `capture/karnwold/` |
 | `karnwold-siege-720p.mp4`, `karnwold-prototype-loop.mp4` | Alternates from the Karnwold repository (a siege dice roll; the physical prototype) |

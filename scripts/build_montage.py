@@ -24,7 +24,9 @@ Outputs:
     montage/build/<cut>-master.mp4              near-lossless master (not deployed)
     montage/build/<cut>-chapters.json           when each project is on screen
 Each hero cut's chapter times are also written into site/index.html
-(data-chapters-landscape / -portrait), which the "Now showing" label reads.
+(data-chapters-landscape / -portrait / -phone), which the "Now showing" label
+reads. Three cuts: landscape (16:9) for wide screens, portrait (9:16) for
+portrait tablets, and phone (9:19.5, the shape of a modern phone screen).
 """
 
 from __future__ import annotations
@@ -256,7 +258,7 @@ def main() -> None:
     cuts = sys.argv[1:] or [k for k in SPEC if isinstance(SPEC[k], dict) and "shots" in SPEC[k]]
     for cut in cuts:
         chapters = build(cut)
-        if cut in ("landscape", "portrait"):
+        if cut in ("landscape", "portrait", "phone"):
             write_chapters(cut, chapters)
 
 
