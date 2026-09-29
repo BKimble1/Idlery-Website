@@ -15,7 +15,7 @@
 // https://karnwold.idlery.com/* kind) cannot fire on localhost and are skipped.
 
 import { createServer } from "node:http";
-import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
+import { createReadStream, existsSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -159,7 +159,21 @@ export function start(port = PORT, host = HOST) {
   });
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+// Start only when run directly, not when check_site.mjs imports start(). Both
+// paths are compared as real paths, and without regard to case on Windows, so
+// a symlink, a junction or a lower-case drive letter cannot stop it silently.
+function isEntryPoint() {
+  if (!process.argv[1]) return false;
+  try {
+    const a = realpathSync(resolve(process.argv[1]));
+    const b = realpathSync(fileURLToPath(import.meta.url));
+    return process.platform === "win32" ? a.toLowerCase() === b.toLowerCase() : a === b;
+  } catch {
+    return false;
+  }
+}
+
+if (isEntryPoint()) {
   await start();
   console.log(`Serving ${ROOT}`);
   console.log(`Open http://localhost:${PORT}/  (Ctrl+C to stop)`);
