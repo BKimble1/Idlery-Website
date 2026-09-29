@@ -76,5 +76,7 @@ open fonts Gelasio and Selawik. Nothing in the game was changed.
 
 A real-GPU screen recording of Karnwold (a full round, a siege dice roll, a
 building going up) and of Fab One's camera flying between machines would be
-smoother and richer than frame-stepped software renders. Drop new clips into
-`src-media/montage/`, point a shot's `source` at them, and rebuild.
+smoother and richer than frame-stepped software renders. Short iPhone screen
+recordings of CoreCredit and Elemora in use would replace the two still app
+shots. Drop new clips into `src-media/montage/`, point a shot's `source` at
+them, and rebuild.

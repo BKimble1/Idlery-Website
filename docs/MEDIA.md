@@ -88,4 +88,8 @@ License 1.1 (licences in `site/assets/fonts/`).
 5. **Fab One, real-time:** a screen recording on a GPU machine would be smoother
    still than the frame-stepped renders, and would let the montage show the
    camera flying between machines at full speed.
-6. **Optional:** a photograph of you for the portfolio, if you want one there.
+6. **CoreCredit and Elemora in use:** 5–10 s iPhone screen recordings of each
+   (iOS Screen Recording, Do Not Disturb on): CoreCredit logging a core and
+   seeing it on the dashboard; Elemora opening an element from the table or
+   building a compound. The montage currently shows the apps as still captures.
+7. **Optional:** a photograph of you for the portfolio, if you want one there.
