@@ -10,7 +10,7 @@ export const ROOT = process.env.CAPTURE_DIR || new URL('./out', import.meta.url)
 export const BASE = 'http://127.0.0.1:4173/';
 export const STEP_MS = 32; // two fake rAF ticks (16 ms grid) per captured frame -> perfectly uniform motion
 
-export async function launch() {
+export async function launch({ width = 1920, height = 1080, dpr = 1 } = {}) {
   const browser = await chromium.launch({
     executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
     args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--hide-scrollbars', '--font-render-hinting=none'],
@@ -18,7 +18,7 @@ export async function launch() {
     // open fonts) so the Windows-targeted font stacks don't fall back to DejaVu. No app files touched.
     env: { ...process.env, FONTCONFIG_FILE: `${ROOT}/fonts/fonts.conf` },
   });
-  const context = await browser.newContext({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
+  const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: dpr });
   const page = await context.newPage();
   const errors = [];
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });

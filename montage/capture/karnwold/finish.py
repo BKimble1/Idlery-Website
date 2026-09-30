@@ -7,6 +7,12 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.environ.get('CAPTURE_DIR', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'out'))
 FPS = 30
+CRF = os.environ.get('CRF', '12')
+try:
+    import imageio_ffmpeg
+    FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
+except ImportError:
+    FFMPEG = 'ffmpeg'
 shot = sys.argv[1]
 src = f'{ROOT}/frames/{shot}'
 frames = sorted(f for f in os.listdir(src) if re.match(r'f\d{5}\.png$', f))
@@ -20,9 +26,9 @@ for i, f in enumerate(frames):
     os.link(f'{src}/{f}', f'{seq}/s{i:05d}.png')
 
 out_mp4 = f'{ROOT}/{shot}.mp4'
-cmd = ['ffmpeg', '-v', 'error', '-y', '-framerate', str(FPS), '-i', f'{seq}/s%05d.png',
+cmd = [FFMPEG, '-v', 'error', '-y', '-framerate', str(FPS), '-i', f'{seq}/s%05d.png',
        '-vf', 'scale=out_color_matrix=bt709:out_range=tv,format=yuv420p',
-       '-c:v', 'libx264', '-preset', 'slow', '-crf', '12', '-pix_fmt', 'yuv420p', '-r', str(FPS),
+       '-c:v', 'libx264', '-preset', 'slow', '-crf', CRF, '-pix_fmt', 'yuv420p', '-r', str(FPS),
        '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',
        '-movflags', '+faststart', out_mp4]
 subprocess.run(cmd, check=True)
@@ -49,8 +55,8 @@ for k, idx in enumerate(picks):
 sheet.save(f'{ROOT}/{shot}_contact.jpg', quality=88)
 
 # verify the MP4 decodes fully and report frame count / duration
-r = subprocess.run(['ffmpeg', '-v', 'error', '-i', out_mp4, '-map', '0:v', '-f', 'null', '-'], capture_output=True, text=True)
-info = subprocess.run(['ffmpeg', '-i', out_mp4], capture_output=True, text=True).stderr
+r = subprocess.run([FFMPEG, '-v', 'error', '-i', out_mp4, '-map', '0:v', '-f', 'null', '-'], capture_output=True, text=True)
+info = subprocess.run([FFMPEG, '-i', out_mp4], capture_output=True, text=True).stderr
 dur = re.search(r'Duration: ([\d:.]+)', info).group(1)
 stream = re.search(r'Stream #0:0.*', info).group(0)
 print(f'{shot}: {n} frames -> {out_mp4}  duration {dur}  decode_errors={r.stderr.strip() or "none"}')

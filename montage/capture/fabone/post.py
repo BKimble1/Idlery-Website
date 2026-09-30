@@ -8,7 +8,11 @@
 import glob, json, os, re, shutil, subprocess, sys
 from PIL import Image, ImageDraw
 
-FFMPEG = '/usr/local/bin/ffmpeg'
+try:
+    import imageio_ffmpeg
+    FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
+except ImportError:
+    FFMPEG = 'ffmpeg'
 d = sys.argv[1].rstrip('/')
 keep = '--keep' in sys.argv
 name = os.path.basename(d)

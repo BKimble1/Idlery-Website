@@ -96,8 +96,8 @@ are the Idlery app icon from `BKimble1/CoreCredit-Legal/brand/`.
 
 ## The hero
 
-A full-bleed studio reel of real footage (Rocket Engineering, Fab One,
-Karnwold, CoreCredit, Elemora and Holograph; see `montage/README.md`) with the
+A full-bleed studio reel of real footage in four chapters (Rocket Engineering,
+Fab One, Karnwold, and CoreCredit with Elemora; see `montage/README.md`) with the
 headline over a scrim that is darkest behind the words (86% at the left edge on desktop, 94% at the bottom on
 phones), so white text holds contrast over every frame, including Fab One's
 light renders; bright shots are also graded down slightly in the edit.
@@ -107,18 +107,20 @@ light renders; bright shots are also graded down slightly in the edit.
 * A visible Pause/Play button (WCAG 2.2.2) and a quiet "Now showing" label that
   names each project as it appears.
 * Three cuts, each framed for its screen: landscape (16:9) on wide screens,
-  portrait (9:16) on portrait tablets, and phone (9:19.5) on phones, so
-  full-screen interface shots are never clipped at the sides. Without
-  scripting, or before the video loads, the first frame is shown as a still.
+  portrait (9:16) on portrait tablets, and phone (9:19.5) on phones, so the
+  product wall's phones are never clipped at the sides. Without scripting, or
+  before the video loads, the first frame (the liftoff) is shown as a still,
+  covering the hero like the video does.
 * The reel is decorative: the page says everything it shows, so the video is
   `aria-hidden` and out of the tab order; the "Now showing" label is hidden
   from assistive technology too.
-* No title or logo card: the reel runs from footage straight back into
-  footage, wrapping on a hard cut from a rocket shot to the fairing.
-* Paced in short shots: no still capture holds much more than a second and a
-  half, and each product shows two real states rather than one long push-in.
-  Dark and bright footage run in groups joined by one dip through black, and
-  every other join is a hard cut, so no dissolve ever stacks two pictures.
+* No title or logo card: the product wall's sky and cloud banks are matched
+  to the launch, so the last frame cuts straight back to the first and the
+  reel never stops moving.
+* Measured pacing: four chapters of four to eight seconds, each one
+  continuous piece of action, and no project seen twice. Every join is a hard
+  cut at a motion point, with exposure and colour matched across it, so
+  nothing flashes and no dissolve ever stacks two pictures.
 
 ## Motion
 

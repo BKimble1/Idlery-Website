@@ -477,6 +477,18 @@ try {
 } catch (e) {
   fail("build.py --check", String(e.stdout || e.message).trim().split("\n").slice(0, 6).join(" / "));
 }
+// The reel's chapters: each cut opens on the launch and shows every project once.
+{
+  const html = readFileSync(join(SITE, "index.html"), "utf8");
+  for (const cut of ["landscape", "portrait", "phone"]) {
+    const m = new RegExp(`data-chapters-${cut}='([^']*)'`).exec(html);
+    const ch = m ? JSON.parse(m[1]) : [];
+    const names = ch.map((c) => c.name);
+    ok(ch.length >= 3 && names[0] === "Rocket Engineering" && ch[0].t === 0, `reel ${cut}`, `should open on Rocket Engineering (${names.join(", ")})`);
+    ok(new Set(names).size === names.length, `reel ${cut}`, `a project comes back later in the reel (${names.join(", ")})`);
+    notes.push(`reel ${cut}: ${ch.map((c) => `${c.t}s ${c.name}`).join(", ")}`);
+  }
+}
 for (const f of ["hero-landscape.av1.mp4", "hero-landscape.mp4", "hero-portrait.av1.mp4", "hero-portrait.mp4", "hero-phone.av1.mp4", "hero-phone.mp4"]) {
   try { notes.push(`${f}: ${(statSync(join(SITE, "assets", "video", f)).size / 1024).toFixed(0)} KB`); }
   catch { fail("video", `${f} is missing`); }

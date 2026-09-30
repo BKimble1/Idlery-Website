@@ -1,0 +1,19 @@
+{
+ "name": "ses1-port",
+ "url": "http://127.0.0.1:4190/?v=mission&m=leo&quality=high",
+ "w": 720,
+ "h": 1280,
+ "hideUI": true,
+ "pre": 2,
+ "frames": 150,
+ "setup": [
+  {
+   "until": "window.__rocketFrame.location === 'flight' && window.__rocketFrame.n > 5",
+   "max": 600
+  },
+  {
+   "eval": "window.__rocketDirector.dissolve = null; window.__rocketDirector.mode = 'auto'; window.__rocketSeekMission(155.5); window.__rocketPlayback.player.setRate(1); window.__rocketPlayback.player.play()"
+  }
+ ],
+ "outDir": "out/ses1-port"
+}

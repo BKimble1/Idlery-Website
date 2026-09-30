@@ -125,15 +125,16 @@ python3 montage/compose.py                  # the Elemora wall, if its captures 
 python3 scripts/build_montage.py            # all three cuts
 ```
 
-A silent studio reel of real project footage: Rocket Engineering, Holograph,
-Karnwold, Fab One, CoreCredit and Elemora, 26 s in landscape and 24 s in two
-separately composed tall cuts (9:16 for portrait tablets, 9:19.5 for phones),
-looping from footage straight back into footage with no title card. Each join
-is a hard cut or, where the brightness changes most, a dip through black; the
-builder also supports crossfades, but none is used. The edit is `montage/shots.json`;
+A silent studio reel of real project footage in four chapters: Rocket
+Engineering (liftoff, then the upper stage lighting after separation), a single
+flight through the Fab One fab, a Karnwold siege roll, and CoreCredit and
+Elemora on a wall of phones. About 22 s in landscape and in two separately
+composed tall cuts (9:16 for portrait tablets, 9:19.5 for phones), joined by
+hard cuts at motion points and looping from the product wall straight back
+into the launch with no title card. The edit is `montage/shots.json`;
 `montage/README.md` explains every field and where each piece of footage came
 from, and `montage/capture/` holds the scripts that rendered the simulator
-footage. The script writes the web encodes (AV1 and H.264 MP4) and posters to
+footage; `montage/compose.py` composes the product wall. The script writes the web encodes (AV1 and H.264 MP4) and posters to
 `site/assets/video/`, and the "Now showing" chapter times into
 `site/index.html`; run `python3 scripts/build.py` afterwards to restamp the
 video's version hash. The page plays the landscape cut on wide screens, the

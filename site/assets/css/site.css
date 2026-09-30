@@ -445,6 +445,11 @@ a:hover { color: var(--ink); }
   height: 100%;
 }
 .hero-media { z-index: -2; }
+.hero-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 .hero-media img,
 .hero-media video {
   object-fit: cover;

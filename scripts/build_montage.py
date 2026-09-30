@@ -98,8 +98,9 @@ def smooth(t: float) -> float:
 
 
 def grade(arr: np.ndarray, g: dict | None) -> np.ndarray:
-    """A gentle, global grade (exposure and contrast only), so bright footage
-    sits under the white headline. Never local, never content-changing."""
+    """A gentle, global grade (exposure, contrast and white balance), so each
+    chapter sits under the white headline and matches its neighbours. Never
+    local, never content-changing. `tint` is a per-channel gain [r, g, b]."""
     if not g:
         return arr
     f = arr.astype(np.float32) / 255.0
@@ -109,6 +110,8 @@ def grade(arr: np.ndarray, g: dict | None) -> np.ndarray:
         f = (f - 0.5) * g["contrast"] + 0.5
     if "brightness" in g:
         f = f * g["brightness"]
+    if "tint" in g:
+        f = f * np.asarray(g["tint"], np.float32)[None, None, :]
     if "saturation" in g:
         grey = f.mean(axis=2, keepdims=True)
         f = grey + (f - grey) * g["saturation"]

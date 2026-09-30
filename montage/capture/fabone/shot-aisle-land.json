@@ -1,0 +1,67 @@
+{
+ "name": "aisle-land",
+ "url": "http://127.0.0.1:4183/?explore&virt=1&quality=high",
+ "warm": {
+  "w": 960,
+  "h": 600
+ },
+ "w": 1600,
+ "h": 960,
+ "expect": [
+  1600,
+  900
+ ],
+ "setup": [
+  {
+   "wait": 3000
+  },
+  {
+   "until": "(() => { const s = window.__fab.useStageInfo.getState(); return s.shown && !s.flying && !s.loading; })()",
+   "max": 400
+  },
+  {
+   "advance": 5
+  },
+  {
+   "eval": "window.__fabStores.useApp.getState().navigate({mode:'explore', machine:'foup'})"
+  },
+  {
+   "advance": 3
+  },
+  {
+   "until": "(() => { const s = window.__fab.useStageInfo.getState(); return s.shown && !s.flying && !s.loading; })()",
+   "max": 400
+  },
+  {
+   "advance": 30
+  },
+  {
+   "eval": "window.__fabStores.useApp.getState().navigate({mode:'explore', machine:'scanner'})"
+  },
+  {
+   "advance": 3
+  },
+  {
+   "until": "(() => { const s = window.__fab.useStageInfo.getState(); return s.shown && !s.flying && !s.loading; })()",
+   "max": 400
+  },
+  {
+   "advance": 30
+  },
+  {
+   "resize": true
+  },
+  {
+   "settleSize": true
+  }
+ ],
+ "pre": 3,
+ "during": [
+  {
+   "frame": 0,
+   "eval": "window.__fab.stageTime.dt = 1/80; window.__fabStores.useApp.getState().navigate({mode:'explore', machine:'foup'})"
+  }
+ ],
+ "frames": 240,
+ "outDir": "out/aisle-land"
+}

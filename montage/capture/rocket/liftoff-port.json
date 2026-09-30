@@ -5,7 +5,7 @@
  "h": 1280,
  "hideUI": true,
  "pre": 2,
- "frames": 125,
+ "frames": 240,
  "setup": [
   {
    "until": "window.__rocketFrame.location === 'flight' && window.__rocketFrame.n > 5",
